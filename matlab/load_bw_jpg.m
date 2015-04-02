@@ -11,7 +11,8 @@ img = rgb2gray(rgb);
 [m,n] = size(img);
 
 % Step through and threshold to turn the greyscale to a black-and-white
-THRESHOLD = 128;
+% THRESHOLD = 128;
+THRESHOLD = 200;
 WHITE = 255;
 BLACK = 0;
 for y = 1:m

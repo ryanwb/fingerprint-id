@@ -1,2 +1,4 @@
 # Temp MATLAB files
 *.m~
+# .ps files
+*.ps
