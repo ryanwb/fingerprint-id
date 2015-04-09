@@ -1,22 +1,34 @@
 //
-//  medianFilter.h
+//  main.c
+//  113DTesting
+//  medianFilter
 //  MEDIAN FILTER C IMPLEMENTATION
 //
-//
-//
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 
 #define padding 2
 #define windowXdim 3
-#define windownYdim 3
-#define MEDIANELEMENT (0.5)*windowXdim*windownYdim
-#define WINDOWSIZE windowXdim*windownYdim
+#define windowYdim 3
+#define MEDIANELEMENT (0.5)*windowXdim*windowYdim
+#define WINDOWSIZE windowXdim*windowYdim
 
-#ifndef _medianFilter_h
-#define _medianFilter_h
+//matrix printing helper function
+void printMatrix(int r, int c, int * window)
+{
+    int i,j;
+    for(i=0; i< r; i++)
+    {
+        for(j=0; j< c; j++)
+        {
+            printf("%i",*(window+i*c+j));
+        }
+        printf("\n");
+    }
+}
 
-
+//comparison helper function for qsort
 int cmpfunc (const void * a, const void * b)
 {
     return ( *(int*)a - *(int*)b );
@@ -76,16 +88,25 @@ int * med_filter(int xDim, int yDim, int *image)
             {
                 for(d=0; d<windowXdim; d++)
                 {
-                    //TODO copy the paddedmatrix into the window
-                    window(c*windowXdim+d)=paddedMatrix((a+c-1)*xDim+(b+d-1));
+                    // copy the paddedmatrix into the window
+                    *(window+c*windowXdim+d)=*(paddedMatrix+(a+c-1)*xDim+(b+d-1));
                 }
             }
+            //for each window, find the median element of the window & copy to output
             qsort(window,WINDOWSIZE,sizeof(int),cmpfunc);
-            output(a*xDim+b)=window[MEDIANELEMENT];
+            *(output+a*xDim+b)=window[(int)MEDIANELEMENT];
         }
     }
     return output;
 }
 
 
-#endif
+
+
+
+int main(int argc, const char * argv[]) {
+    // insert code here...
+    
+    return 0;
+}
+
