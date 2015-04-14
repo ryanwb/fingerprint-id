@@ -11,37 +11,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//SUBCOND_ONE Determines if the first Zhang-Suen subcondition is true
-int SUBCOND_ONE(int i , int j ,int rMax, int* img){//RUSS: rMax is to access the array, pointer shit
-    int s=0;
-    int a=A(img,i,j,rMax);
-    int b=/*TODO: RUSS:function B*/;
-
-    if (2<=b && b<=6 && a==1) {
-        if((*(img+(i-1)*rMax+j)) *(*(img+(i*rMax)+(j+1))) * (*(img+((i+1)*rMax+j)))==0){
-            if ( (*(img+(i*rMax)+(j+1))) * (*(img+(i+1)*rMax+j)) * (*(img+i*rMax+(j-1)))==0 ){
-                s=1;
-            }
-        }
-    }
-    return s;
-}
-
-//SUBCOND_TWO Determines if the second Zhang-Suen subcondition is true
-int SUBCOND_TWO(int i , int j ,int rMax, int* img){
-    int s=0;
-    int a=A(img,i,j,rMax);
-    int b=/*TODO: RUSS:function B*/;
-    if (2<=b && b<=6 && a==1) {
-        if((*(img+(i-1)*rMax+j)) *(*(img+(i*rMax)+(j+1))) * (*(img+i*rMax+(j-1)))==0){
-            if ( (*(img+(i-1)*rMax+j)) * (*(img+(i+1)*rMax+j)) * (*(img+i*rMax+(j-1)))==0 ){
-                s=1;
-            }
-        }
-    }
-    return s;
-}
-
 //A Gets the Zhang-Suen A function value for a pixel img(i,j)
 //NOTE:RUSS: apprently C99 has an implicit function called A(), might wanna consider renaming
 int A(int * img, int i, int j, int rMax){
@@ -83,12 +52,49 @@ int A(int * img, int i, int j, int rMax){
 
 int B(int* img,int i, int j,int rMax)
 {
-   int b=0;
-    //TODO: Russ: Implement function B
+    int b=0;
+    b=b+ *(img+(i-1)*rMax+(j));
+    b=b+ *(img+(i-1)*rMax+(j+1));
+    b=b+ *(img+(i)*rMax+(j+1));
+    b=b+ *(img+(i+1)*rMax+(j+1));
+    b=b+ *(img+(i+1)*rMax+(j));
+    b=b+ *(img+(i+1)*rMax+(j-1));
+    b=b+ *(img+(i)*rMax+(j-1));
+    b=b+ *(img+(i-1)*rMax+(j-1));
+    
     return b;
 }
 
+//SUBCOND_ONE Determines if the first Zhang-Suen subcondition is true
+int SUBCOND_ONE(int i , int j ,int rMax, int* img){//RUSS: rMax is to access the array, pointer shit
+    int s=0;
+    int a=A(img,i,j,rMax);
+    int b=B(img,i,j,rMax);
+    
+    if (2<=b && b<=6 && a==1) {
+        if((*(img+(i-1)*rMax+j)) *(*(img+(i*rMax)+(j+1))) * (*(img+((i+1)*rMax+j)))==0){
+            if ( (*(img+(i*rMax)+(j+1))) * (*(img+(i+1)*rMax+j)) * (*(img+i*rMax+(j-1)))==0 ){
+                s=1;
+            }
+        }
+    }
+    return s;
+}
 
+//SUBCOND_TWO Determines if the second Zhang-Suen subcondition is true
+int SUBCOND_TWO(int i , int j ,int rMax, int* img){
+    int s=0;
+    int a=A(img,i,j,rMax);
+    int b=B(img,i,j,rMax);
+    if (2 <= b && b <= 6 && a == 1) {
+        if((*(img+(i-1)*rMax+j)) *(*(img+(i*rMax)+(j+1))) * (*(img+i*rMax+(j-1)))==0){
+            if ( (*(img+(i-1)*rMax+j)) * (*(img+(i+1)*rMax+j)) * (*(img+i*rMax+(j-1)))==0 ){
+                s=1;
+            }
+        }
+    }
+    return s;
+}
 
 int * zhang_suen(int m, int n, int * img){
     int * thin = (int*)malloc(m*n*sizeof(int));
@@ -101,20 +107,19 @@ int * zhang_suen(int m, int n, int * img){
         }
     }
     
-    int did_change=1;
+    int did_change = 1;
+    int p = 1;
     
     //Note: pts_to_remove will be a linked list in C? or can just use an array
     //RUSS: I started to implement this in an array, but can be changed if linked list ends up being better
-    while(did_change==1){
-        int p=1;
-        did_change=0;
+    while(did_change== 1){
+        did_change = 0;
         int * pts_to_remove= (int*)malloc(m*n*sizeof(int)*2);
-        //RUSS: not sure what the 2 is for, but included it anyways for now
         int i,j;
         //RUSS:ZERO OUT THE MATRIX
-        for(i=0;i<2;i++){
-            for(j=0;j<m*n;j++){
-                *(pts_to_remove+ i*(m*n)+j)=0;
+        for(i=0;i<m*n;i++){
+            for(j=0;j<2;j++){
+                *(pts_to_remove+ i*2+j) = 0; //Note: Not sure if this loop dimensions is correct
             }
         }
         
@@ -122,21 +127,44 @@ int * zhang_suen(int m, int n, int * img){
         
         for(i=1;i<m-1;i++){
             for (j=1; j<n-1; j++){
-                if (*(thin+(i*n)+j)==1 &&/*TODO: RUSS:SUBCONDONE FUNC*/) {
-                    //TODO: UPDATE pts_to_remove
+                if (*(thin+(i*n)+j)==1 && SUBCOND_ONE(i, j, n, thin)== 1) {
+                    *(pts_to_remove+p*2) = i;
+                    *(pts_to_remove+p*2+1) = j;
+                    did_change=1;
+                    p++;
                 }
             }
         }
-        //TODO:    % Remove points found in first subiteration
-
-        //TODO:    % Do the second subiteration
-
-        //TODO:    % Remove points found in second subiteration
-    
-        //TODO: UPDATE THIN
+        //Remove points found in the first subiteration
+        for(i=0; i<p-1;i++){
+            int k = pts_to_remove[p*2];
+            int l = pts_to_remove[p*2+1];
+            thin[k*2 + l] = 0;
+        }
         
-        free(pts_to_remove);//RUSS:free here?? (just put this here for now as a reminder)
+        p=1;
+        
+        //Do the second subiteration
+        for(i=1;i<m-1;i++){
+            for(j=1;j<n-1;j++){
+                if (*(thin+(i*n)+j)==1 && SUBCOND_TWO(i, j, n, thin)== 1) {
+                    *(pts_to_remove+p*2) = i;
+                    *(pts_to_remove+p*2+1) = j;
+                    did_change = 1;
+                    p++;
+                }
+            }
+        }
+        
+        //:Remove points found in second subiteration
+        for(i=0; i<p-1;i++){
+            int k = pts_to_remove[p*2];
+            int l = pts_to_remove[p*2+1];
+            thin[k*2 + l] = 0;
+            
+        }
+        free(pts_to_remove);
     }
-    //TODO RUSS:DO I NEED TO FREE *img(input) ??
+    free(img);
     return thin;
 }

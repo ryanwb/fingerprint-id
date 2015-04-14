@@ -98,19 +98,11 @@ int * med_filter(int xDim, int yDim, int *image)
         }
     }
     //FREE MEMORY FOR TEMP MATRICIES, TODO: DO I NEED TO FREE *image (input)???
+    free(image);
     free(window);
     free(paddedMatrix);
     
     return output;
 }
 
-
-
-
-
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    
-    return 0;
-}
 
