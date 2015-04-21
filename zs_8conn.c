@@ -26,8 +26,8 @@ int B(int i, int j, int * img, int rMax){
 int flood_count_recursive(int i, int j, int * img, int x, int y,int rMax, int r, int c);
 
 int flood_count(int i, int j, int * img, int x, int y,int rMax, int r, int c){
-  //y and x are current positions
-  //i and j are center-of-frame positions
+    //y and x are current positions
+    //i and j are center-of-frame positions
     int n;
     if(!(i-1<=y && y<= i+1)){
         n=0;
@@ -50,6 +50,7 @@ int flood_count(int i, int j, int * img, int x, int y,int rMax, int r, int c){
     }
     *(nimg+y*rMax+x)=0;
     n=flood_count_recursive(i, j, nimg, x, y, rMax, r, c);
+    free(nimg);
     return n;
 }
 
@@ -120,5 +121,6 @@ int * zs_8conn(int m, int n, int * in){
             }
         }
     }
+    free(in);
     return out;
 }

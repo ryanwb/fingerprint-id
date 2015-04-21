@@ -29,9 +29,30 @@ void printMatrix(int r, int c, int * window)
 }
 
 //comparison helper function for qsort
-int cmpfunc (const void * a, const void * b)
+/*int cmpfunc (const void * a, const void * b)
+ {
+ return ( *(int*)a - *(int*)b );
+ }*/
+
+//BUBBLE SORT (REPLACEMENT FOR QSORT)
+void bubble_sort(int a[], int len)
 {
-    return ( *(int*)a - *(int*)b );
+    // "Rising" bubble sort
+    while (len > 0) {
+        int swapped = 0;
+        for (int i = 0; i < len - 1; i++) {
+            if (a[i] > a[i+1]) {
+                // Swap
+                int x = a[i+1];
+                a[i+1] = a[i];
+                a[i] = x;
+                swapped = 1;
+            }
+        }
+        if (!swapped)
+            break;
+        --len;
+    }
 }
 
 int * med_filter(int xDim, int yDim, int *image)
@@ -92,8 +113,10 @@ int * med_filter(int xDim, int yDim, int *image)
                     *(window+c*windowXdim+d)=*(paddedMatrix+(a+c-1)*xDim+(b+d-1));
                 }
             }
+            //qsort(window,WINDOWSIZE,sizeof(int),cmpfunc);
+            
             //for each window, find the median element of the window & copy to output
-            qsort(window,WINDOWSIZE,sizeof(int),cmpfunc);
+            bubble_sort(window, WINDOWSIZE);
             *(output+a*xDim+b)=window[(int)MEDIANELEMENT];
         }
     }
@@ -101,7 +124,6 @@ int * med_filter(int xDim, int yDim, int *image)
     free(image);
     free(window);
     free(paddedMatrix);
-    
     return output;
 }
 
