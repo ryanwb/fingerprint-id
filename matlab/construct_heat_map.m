@@ -1,3 +1,5 @@
+% WORK IN PROGRESS
+
 function [ heat ] = construct_heat_map( fname )
 %CONSTRUCT_HEAT_MAP Constructs a heat map from a fingerprint image
 

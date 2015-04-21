@@ -4,14 +4,28 @@
 % Clear workspace
 clear all;
 
-images = {'russ1.JPG', 'russ2.JPG', 'russ3.JPG', ...
-          'ryan1.JPG', 'ryan2.JPG', 'ryan3.JPG'};
+images = {'fingerprint-vector.jpg', ...
+          'russ1.JPG', 'russ2.JPG', 'russ3.JPG', ...
+          'ryan1.JPG', 'ryan2.JPG', 'ryan3.JPG', ...
+          '104_2.tif', '104_6.tif'};
+
+% Preallocate figures? Not sure how to do this...
+% figures = gobjects(1, length(images));
 
 for i = 1 : length(images)
-
+    
     % Load image as black-and-white
-    img = load_bw_jpg(images{i});
-    figure(i);
+    [token, remain] = strtok(images{i}, '.');
+    if strcmpi(remain, '.tif') == 1
+        img = load_bw_tif(images{i});
+    elseif strcmpi(token, 'fingerprint-vector') == 1
+        img = load_bw_tif(images{i});
+    else
+        img = load_bw_jpg(images{i});
+    end
+    
+    figures(i) = figure('Position', [100, 100, 1024, 200]);
+    set(0, 'currentfigure', figures(i));
     subplot(1,3,1);
     imshow(img);
 

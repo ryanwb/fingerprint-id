@@ -6,7 +6,7 @@ function [ out_img ] = to_binary( in_img )
 out_img = zeros(m,n);
 
 % Step through image
-THRESHOLD = 128;
+THRESHOLD = 245;
 WHITE = 1;
 BLACK = 0;
 for y = 1:m

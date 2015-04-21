@@ -1,3 +1,5 @@
+% WORK IN PROGRESS
+
 function [ heat ] = merge_heat_maps( heat_one, heat_two )
 %MERGE_HEAT_MAPS Merges two minutiae heat maps with a weighted average
 
