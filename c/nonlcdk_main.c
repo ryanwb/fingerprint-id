@@ -7,6 +7,7 @@
 #include "m_mem.h"
 #include "img_utils.h"
 #include "median_filter.h"
+#include "zhang_suen.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -83,8 +84,7 @@ int main(void)
 	upsidedown(binary, width, height); // flip it upside down (in-place)
 
 	unsigned char* median = med_filter(binary, width, height);
-	// m_free(binary);
-	// med_filter frees the input!
+	m_free(binary);
 
 	// flip it back upside down before display
 	upsidedown(median, width, height);

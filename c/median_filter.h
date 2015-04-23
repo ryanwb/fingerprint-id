@@ -97,8 +97,8 @@ unsigned char * med_filter(unsigned char *image, int xDim, int yDim)
             *(output+a*xDim+b)=window[(int)MEDIANELEMENT];
         }
     }
-    //FREE MEMORY FOR TEMP MATRICIES, TODO: DO I NEED TO FREE *image (input)???
-    m_free(image);
+
+    //FREE MEMORY FOR TEMP MATRICIES
     m_free(window);
     m_free(paddedMatrix);
     return output;

@@ -1,19 +1,8 @@
-//
-//  zhang_suen.c
-//  113DTesting
-//
-//  Created by s110773 on 9/4/15.
-//  Copyright (c) 2015 EE113DB. All rights reserved.
-//
-//RUSS: I started the C implenetation of the Z-S algorithm based on your Matlab Code, tried to
-//keep all the variable names/ structure as close to the same as possible, lmk if you have questions
-
 #include <stdio.h>
 #include <stdlib.h>
 
-//A Gets the Zhang-Suen A function value for a pixel img(i,j)
-//NOTE:RUSS: apprently C99 has an implicit function called A(), might wanna consider renaming
-int A(int * img, int i, int j, int rMax){
+// zs_A Gets the Zhang-Suen A function value for a pixel img(i,j)
+int zs_A(unsigned char* img, int i, int j, int rMax){
     int a=0;
     //% P2 -> P3
     if(*(img+(i-1)*rMax+j)==0 && *(img+(i-1)*rMax+(j+1))==1){
@@ -50,7 +39,7 @@ int A(int * img, int i, int j, int rMax){
     return a;
 }
 
-int B(int* img,int i, int j,int rMax)
+int zs_B(unsigned char* img,int i, int j,int rMax)
 {
     int b=0;
     b=b+ *(img+(i-1)*rMax+(j));
@@ -66,10 +55,10 @@ int B(int* img,int i, int j,int rMax)
 }
 
 //SUBCOND_ONE Determines if the first Zhang-Suen subcondition is true
-int SUBCOND_ONE(int i , int j ,int rMax, int* img){//RUSS: rMax is to access the array, pointer shit
+int SUBCOND_ONE(int i , int j ,int rMax, unsigned char* img){//RUSS: rMax is to access the array
     int s=0;
-    int a=A(img,i,j,rMax);
-    int b=B(img,i,j,rMax);
+    int a=zs_A(img,i,j,rMax);
+    int b=zs_B(img,i,j,rMax);
     
     if (2<=b && b<=6 && a==1) {
         if((*(img+(i-1)*rMax+j)) *(*(img+(i*rMax)+(j+1))) * (*(img+((i+1)*rMax+j)))==0){
@@ -82,10 +71,10 @@ int SUBCOND_ONE(int i , int j ,int rMax, int* img){//RUSS: rMax is to access the
 }
 
 //SUBCOND_TWO Determines if the second Zhang-Suen subcondition is true
-int SUBCOND_TWO(int i , int j ,int rMax, int* img){
+int SUBCOND_TWO(int i , int j ,int rMax, unsigned char* img){
     int s=0;
-    int a=A(img,i,j,rMax);
-    int b=B(img,i,j,rMax);
+    int a=zs_A(img,i,j,rMax);
+    int b=zs_B(img,i,j,rMax);
     if (2 <= b && b <= 6 && a == 1) {
         if((*(img+(i-1)*rMax+j)) *(*(img+(i*rMax)+(j+1))) * (*(img+i*rMax+(j-1)))==0){
             if ( (*(img+(i-1)*rMax+j)) * (*(img+(i+1)*rMax+j)) * (*(img+i*rMax+(j-1)))==0 ){
@@ -96,8 +85,8 @@ int SUBCOND_TWO(int i , int j ,int rMax, int* img){
     return s;
 }
 
-int * zhang_suen(int m, int n, int * img){
-    int * thin = (int*)malloc(m*n*sizeof(int));
+    unsigned char* zhang_suen(int m, int n, unsigned char* img){
+    unsigned char* thin = (unsigned char*)malloc(m*n*sizeof(unsigned char));
     
     //thin = img;
     int a,b;
@@ -165,6 +154,5 @@ int * zhang_suen(int m, int n, int * img){
         }
         free(pts_to_remove);
     }
-    free(img);
     return thin;
 }
