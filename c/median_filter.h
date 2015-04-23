@@ -7,7 +7,7 @@
 #define padding 2
 #define windowXdim 3
 #define windowYdim 3
-#define MEDIANELEMENT (0.5)*windowXdim*windowYdim
+#define MEDIANELEMENT 5 // (0.5)*windowXdim*windowYdim
 #define WINDOWSIZE windowXdim*windowYdim
 
 //BUBBLE SORT (REPLACEMENT FOR QSORT)

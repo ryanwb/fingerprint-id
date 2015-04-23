@@ -77,18 +77,26 @@ int main(void)
     /* Free all memory allocated for the image */
     BMP_Free(bmp);
 
+    printf("Rendering as black and white...\n");
 	unsigned char* binary = to_bw(bitmap, width, height); // load the image in black & white
 	m_free(bitmap);
 
+    printf("Binarizing...\n");
 	binarize(binary, width, height); // binarize the image (in-place)
 	upsidedown(binary, width, height); // flip it upside down (in-place)
 
+    printf("Running median filter...\n");
 	unsigned char* median = med_filter(binary, width, height);
 	m_free(binary);
+
+    printf("Skeletonizing...\n");
+    // unsigned char* skeleton = zhang_suen(height, width, median);
+    // m_free(median);
 
 	// flip it back upside down before display
 	upsidedown(median, width, height);
 
+    printf("Saving result...\n");
     /* Save result */
     out_bmp = bmp_from_binary_array(median, width, height, depth);
     m_free(median);

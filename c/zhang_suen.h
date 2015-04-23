@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 // zs_A Gets the Zhang-Suen A function value for a pixel img(i,j)
-int zs_A(unsigned char* img, int i, int j, int rMax){
+int zs_A(unsigned char* img, int i, int j, int rMax) {
     int a=0;
     //% P2 -> P3
     if(*(img+(i-1)*rMax+j)==0 && *(img+(i-1)*rMax+(j+1))==1){
@@ -39,8 +39,7 @@ int zs_A(unsigned char* img, int i, int j, int rMax){
     return a;
 }
 
-int zs_B(unsigned char* img,int i, int j,int rMax)
-{
+int zs_B(unsigned char* img,int i, int j,int rMax) {
     int b=0;
     b=b+ *(img+(i-1)*rMax+(j));
     b=b+ *(img+(i-1)*rMax+(j+1));
@@ -55,7 +54,7 @@ int zs_B(unsigned char* img,int i, int j,int rMax)
 }
 
 //SUBCOND_ONE Determines if the first Zhang-Suen subcondition is true
-int SUBCOND_ONE(int i , int j ,int rMax, unsigned char* img){//RUSS: rMax is to access the array
+int SUBCOND_ONE(int i , int j ,int rMax, unsigned char* img) {//RUSS: rMax is to access the array
     int s=0;
     int a=zs_A(img,i,j,rMax);
     int b=zs_B(img,i,j,rMax);
@@ -71,7 +70,7 @@ int SUBCOND_ONE(int i , int j ,int rMax, unsigned char* img){//RUSS: rMax is to 
 }
 
 //SUBCOND_TWO Determines if the second Zhang-Suen subcondition is true
-int SUBCOND_TWO(int i , int j ,int rMax, unsigned char* img){
+int SUBCOND_TWO(int i , int j ,int rMax, unsigned char* img) {
     int s=0;
     int a=zs_A(img,i,j,rMax);
     int b=zs_B(img,i,j,rMax);
@@ -85,7 +84,7 @@ int SUBCOND_TWO(int i , int j ,int rMax, unsigned char* img){
     return s;
 }
 
-    unsigned char* zhang_suen(int m, int n, unsigned char* img){
+unsigned char* zhang_suen(int m, int n, unsigned char* img) {
     unsigned char* thin = (unsigned char*)malloc(m*n*sizeof(unsigned char));
     
     //thin = img;
