@@ -2,3 +2,5 @@
 *.m~
 # .ps files
 *.ps
+# .o files
+*.o

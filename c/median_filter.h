@@ -1,12 +1,8 @@
-//
-//  main.c
-//  113DTesting
-//  medianFilter
-//  MEDIAN FILTER C IMPLEMENTATION
-//
-#include <stdlib.h>
-#include <stdio.h>
+#ifndef MEDIAN_FILTER_H
+#define MEDIAN_FILTER_H
 
+#include "img_params.h"
+#include "m_mem.h"
 
 #define padding 2
 #define windowXdim 3
@@ -14,36 +10,17 @@
 #define MEDIANELEMENT (0.5)*windowXdim*windowYdim
 #define WINDOWSIZE windowXdim*windowYdim
 
-//matrix printing helper function
-void printMatrix(int r, int c, int * window)
-{
-    int i,j;
-    for(i=0; i< r; i++)
-    {
-        for(j=0; j< c; j++)
-        {
-            printf("%i",*(window+i*c+j));
-        }
-        printf("\n");
-    }
-}
-
-//comparison helper function for qsort
-/*int cmpfunc (const void * a, const void * b)
- {
- return ( *(int*)a - *(int*)b );
- }*/
-
 //BUBBLE SORT (REPLACEMENT FOR QSORT)
-void bubble_sort(int a[], int len)
+void bubble_sort(unsigned char a[], int len)
 {
     // "Rising" bubble sort
     while (len > 0) {
         int swapped = 0;
-        for (int i = 0; i < len - 1; i++) {
+        int i = 0;
+        for (i = 0; i < len - 1; i++) {
             if (a[i] > a[i+1]) {
                 // Swap
-                int x = a[i+1];
+            	unsigned char x = a[i+1];
                 a[i+1] = a[i];
                 a[i] = x;
                 swapped = 1;
@@ -55,14 +32,14 @@ void bubble_sort(int a[], int len)
     }
 }
 
-int * med_filter(int xDim, int yDim, int *image)
+unsigned char * med_filter(unsigned char *image, int xDim, int yDim)
 {
     //add padding to dimensions
     int paddedXDim=xDim+padding;
     int paddedYDim=yDim+padding;
     
     //padded matrix
-    int *paddedMatrix=(int*)malloc(paddedXDim*paddedYDim*sizeof(int));
+    unsigned char *paddedMatrix=(unsigned char*)m_malloc(paddedXDim*paddedYDim*sizeof(unsigned char));
     int i,j;
     for(i=0;i<paddedYDim;i++)
     {
@@ -96,8 +73,8 @@ int * med_filter(int xDim, int yDim, int *image)
      */
     
     //create a 3x3 window
-    int *window=(int*)malloc(windowXdim*windowYdim*sizeof(int));
-    int *output=(int*)malloc(xDim*yDim*sizeof(int));
+    unsigned char *window=(unsigned char*)m_malloc(windowXdim*windowYdim*sizeof(unsigned char));
+    unsigned char *output=(unsigned char*)m_malloc(xDim*yDim*sizeof(unsigned char));
     
     int a,b;
     for(a=0;a<yDim; a++)
@@ -121,10 +98,10 @@ int * med_filter(int xDim, int yDim, int *image)
         }
     }
     //FREE MEMORY FOR TEMP MATRICIES, TODO: DO I NEED TO FREE *image (input)???
-    free(image);
-    free(window);
-    free(paddedMatrix);
+    m_free(image);
+    m_free(window);
+    m_free(paddedMatrix);
     return output;
 }
 
-
+#endif
