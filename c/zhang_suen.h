@@ -95,12 +95,11 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
         }
     }
     
-    int did_change = 1;
-    int p = 1;
-    
+    int did_change = 1;    
     //Note: pts_to_remove will be a linked list in C? or can just use an array
     //RUSS: I started to implement this in an array, but can be changed if linked list ends up being better
     while(did_change== 1){
+        int p = 1;
         did_change = 0;
         int * pts_to_remove= (int*)malloc(m*n*sizeof(int)*2);
         int i,j;
