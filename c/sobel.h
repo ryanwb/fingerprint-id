@@ -10,7 +10,7 @@
  */
 unsigned char* sobel_filter(unsigned char* image, int width, int height)
 {
-	unsigned char* sobel_out = m_malloc(width * height);
+	unsigned char* sobel_out = m_malloc(width * height * sizeof(unsigned char));
 
 	int sobel_x[3][3] = {{-1,  0,  1},
 				   	     {-2,  0,  2},

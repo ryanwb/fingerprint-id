@@ -9,6 +9,7 @@
 #include "median_filter.h"
 #include "zhang_suen.h"
 #include "zs_8conn.h"
+#include "minutiae_cn_map.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -36,7 +37,7 @@ unsigned char* array_from_bmp(BMP* bmp, UINT width, UINT height)
 
 BMP* bmp_from_binary_array(unsigned char* array, UINT width, UINT height, USHORT depth)
 {
-	BMP* bmp = BMP_Create(width, height, depth );
+	BMP* bmp = BMP_Create(width, height, depth);
 
 	UCHAR   r, g, b;
 	UINT	x, y;
@@ -102,7 +103,10 @@ int main(void)
     // Invert back
     invert_binary(skeleton, width, height);
 
-	// flip it back upside down before display
+    // Make CN map
+    int* cn_map = minutiae_cn_map(skeleton, width, height);
+
+	// Flip it back upside down before display
 	upsidedown(skeleton, width, height);
 
     printf("Saving result...\n");
@@ -110,8 +114,22 @@ int main(void)
     out_bmp = bmp_from_binary_array(skeleton, width, height, depth);
     m_free(skeleton);
 
+    // Put one green pixel where bifurcations are
+    int i, j;
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            if (cn_map[i*width + j] == 3) {
+                // TODO: THIS IS THROWING AN EXCEPTION?
+                BMP_SetPixelRGB(out_bmp, j, height-i-1, 0, 255, 0);
+            }
+        }
+    }
+
+    free(cn_map);
+
     BMP_WriteFile(out_bmp, "104_2_out.bmp");
-    BMP_CHECK_ERROR(stderr, -2);
+    // TODO: THIS IS THROWING AN EXCEPTION?
+    // BMP_CHECK_ERROR(stderr, -2);
 
     /* Free all memory allocated for the image */
     BMP_Free(out_bmp);
