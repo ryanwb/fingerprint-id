@@ -8,6 +8,7 @@
 #include "img_utils.h"
 #include "median_filter.h"
 #include "zhang_suen.h"
+#include "zs_8conn.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -93,8 +94,10 @@ int main(void)
     invert_binary(median, width, height);
 
     printf("Skeletonizing...\n");
-    unsigned char* skeleton = zhang_suen(height, width, median);
+    unsigned char* zs_skeleton = zhang_suen(height, width, median);
     m_free(median);
+    unsigned char* skeleton = zs_8conn(height, width, zs_skeleton);
+    m_free(zs_skeleton);
 
     // Invert back
     invert_binary(skeleton, width, height);

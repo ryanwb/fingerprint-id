@@ -1,3 +1,6 @@
+#ifndef ZHANG_SUEN_H
+#define ZHANG_SUEN_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -153,3 +156,5 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
     free(pts_to_remove);
     return thin;
 }
+
+#endif

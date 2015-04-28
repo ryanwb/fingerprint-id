@@ -1,77 +1,57 @@
-//
-//  zs_8conn.c
-//  113DTesting
-//
-//  Created by s110773 on 16/4/15.
-//  Copyright (c) 2015 EE113DB. All rights reserved.
-//
+#ifndef ZS_8CONN_H
+#define ZS_8CONN_H
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "zhang_suen.h" // for zs_B function
 
-//B Gets the Zhang-Suen B function value for a pixel img(i,j)
-int B(int i, int j, int * img, int rMax){
-    int b=0;
-    b+= *(img+(i-1)*rMax+(j));
-    b+= *(img+(i-1)*rMax+(j+1));
-    b+= *(img+(i)*rMax+(j+1));
-    b+= *(img+(i+1)*rMax+(j+1));
-    b+= *(img+(i+1)*rMax+(j));
-    b+= *(img+(i+1)*rMax+(j-1));
-    b+= *(img+(i)*rMax+(j-1));
-    b+= *(img+(i-1)*rMax+(j-1));
-    return b;
-}
-
-int flood_count_recursive(int i, int j, int * img, int x, int y,int rMax, int r, int c);
-
-int flood_count(int i, int j, int * img, int x, int y,int rMax, int r, int c){
+int flood_count_recursive(int i, int j, unsigned char * nimg, int x, int y, int m, int n){
     //y and x are current positions
     //i and j are center-of-frame positions
-    int n;
+    int z;
     if(!(i-1<=y && y<= i+1)){
-        n=0;
-        return n;
+        z=0;
+        return z;
     }
     if(!(j-1<=x && x<=j+1)){
-        n=0;
-        return n;
+        z=0;
+        return z;
     }
-    if(*(img+y*rMax+x)==0){
-        n=0;
-        return n;
+    if(*(nimg+y*n+x)==0){
+        z=0;
+        return z;
     }
-    int * nimg=(int*)malloc(r*c*sizeof(int));
-    int l,m;
-    for (l=0; l<r; l++) {
-        for (m=0; m<c; m++) {
-            *(nimg+l*c+m)=*(img+l*c+m);
+
+    *(nimg+y*n+x)=0;
+    z = 1 + flood_count_recursive(i, j, nimg, x-1, y-1, m, n)+flood_count_recursive(i, j, nimg, x, y-1, m, n)
+    +flood_count_recursive(i, j, nimg, x+1, y-1, m, n)+flood_count_recursive(i, j, nimg, x-1, y, m, n)
+    +flood_count_recursive(i, j, nimg, x+1, y, m, n)+flood_count_recursive(i, j, nimg, x-1, y+1, m, n)
+    +flood_count_recursive(i, j, nimg, x, y+1, m, n)+flood_count_recursive(i, j, nimg, x+1, y+1, m, n);
+    return z;
+}
+
+int flood_count(int i, int j, unsigned char * img, int x, int y, int m, int n){
+    unsigned char * nimg=(unsigned char*)malloc(m*n*sizeof(unsigned char));
+    int a, b;
+    for (a=0; a<m; a++) {
+        for (b=0; b<n; b++) {
+            *(nimg+a*n+b)=*(img+a*n+b);
         }
     }
-    *(nimg+y*rMax+x)=0;
-    n=flood_count_recursive(i, j, nimg, x, y, rMax, r, c);
+    flood_count_recursive(i, j, nimg, x, y, m, n);
     free(nimg);
     return n;
 }
 
-//recursive wrapper for the flood count function
-int flood_count_recursive(int i, int j, int * img, int x, int y,int rMax, int r, int c){
-    int n=1+ flood_count(i, j, img, x-1, y-1, rMax, r, c)+flood_count(i, j, img, x, y-1, rMax, r, c)
-    +flood_count(i, j, img, x+1, y-1, rMax, r, c)+flood_count(i, j, img, x-1, y, rMax, r, c)
-    +flood_count(i, j, img, x+1, y, rMax, r, c)+flood_count(i, j, img, x-1, y+1, rMax, r, c)
-    +flood_count(i, j, img, x, y+1, rMax, r, c)+flood_count(i, j, img, x+1, y+1, rMax, r, c);
-    return n;
-}
 
-
-int is_8conn(int i, int j, int * img, int rMax, int a, int b){
+int is_8conn(int i, int j, unsigned char * img, int m, int n) {
     int r;
     int n_black=0;
     int x,y;
     for(y=i-1;y<i+2;y++)
     {
         for (x=j-1; x<j+2; x++) {
-            if(*(img+y*rMax+x)==1){
+            if(*(img+y*n+x)==1){
                 n_black++;
             }
         }
@@ -80,29 +60,27 @@ int is_8conn(int i, int j, int * img, int rMax, int a, int b){
     for(y=i-1;y<i+2;y++)
     {
         for (x=j-1; x<j+2; x++) {
-            if(*(img+y*rMax+x)==1){
-                int n=flood_count(i, j, img, x, y, rMax, a, b);//a & b??
+            if(*(img+y*n+x)==1){
+                int n=flood_count(i, j, img, x, y, m, n);
                 if(n_black==n){
-                    r=1;
-                    return r;
+                    return 1;
                 }
                 else{
-                    r=0;
-                    return r;
+                    return 0;
                 }
             }
         }
     }
     
-    return r;
+    return -1;
 }
 
-int * zs_8conn(int m, int n, int * in){
-    int * out = (int*)malloc(m*n*sizeof(int));
+unsigned char * zs_8conn(int m, int n, unsigned char * in){
+    unsigned char * out = (unsigned char*)malloc(m*n*sizeof(unsigned char));
     int a,b;
-    for(a=0; a<n; a++){
-        for(b=0; b<m; b++){
-            *(out+(a*m)+b)=*(in+(a*m)+b);//out=in
+    for(a=0; a<m; a++){
+        for(b=0; b<n; b++){
+            *(out+(a*n)+b)=*(in+(a*n)+b);//out=in
         }
     }
     
@@ -110,17 +88,18 @@ int * zs_8conn(int m, int n, int * in){
     for(i=1;i<m-1;i++){
         for (j=1; j<n-1; j++){
             if (*(out+n*i+j)==1){
-                if(B(i, j, out, n)>2){
+                if(zs_B(out, i, j, n)>2){
                     /* % if removing the point breaks 8-connectivity,
                      % don't actually remove the point*/
                     *(out+n*i+j)=0;
-                    if(is_8conn(i, j, out, n, m, n)){ //NOTE: Not sure if the m, n are right parameters. need to test. I think needed for matrix copying in flood_count
+                    if(is_8conn(i, j, out, m, n)){
                         *(out+n*i+j)=1;
                     }
                 }
             }
         }
     }
-    free(in);
     return out;
 }
+
+#endif
