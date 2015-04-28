@@ -89,17 +89,23 @@ int main(void)
 	unsigned char* median = med_filter(binary, width, height);
 	m_free(binary);
 
+    // Invert the pixels for skeletonization
+    invert_binary(median, width, height);
+
     printf("Skeletonizing...\n");
-    // unsigned char* skeleton = zhang_suen(height, width, median);
-    // m_free(median);
+    unsigned char* skeleton = zhang_suen(height, width, median);
+    m_free(median);
+
+    // Invert back
+    invert_binary(skeleton, width, height);
 
 	// flip it back upside down before display
-	upsidedown(median, width, height);
+	upsidedown(skeleton, width, height);
 
     printf("Saving result...\n");
     /* Save result */
-    out_bmp = bmp_from_binary_array(median, width, height, depth);
-    m_free(median);
+    out_bmp = bmp_from_binary_array(skeleton, width, height, depth);
+    m_free(skeleton);
 
     BMP_WriteFile(out_bmp, "104_2_out.bmp");
     BMP_CHECK_ERROR(stderr, -2);

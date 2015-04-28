@@ -51,4 +51,22 @@ void upsidedown(unsigned char* img, int width, int height)
 	}
 }
 
+/* upsidedown
+ * Switches 1s to 0s and 0s to 1s in an image (in-place)
+ * We do this because some algorithms consider a filled pixel
+ * to be a 0 while others consider a filled pixel to be a 1
+ */
+void invert_binary(unsigned char* img, int width, int height)
+{
+	unsigned int i, j;
+	for (i = 0; i < height; i++) {
+		for (j = 0; j < width; j++) {
+			if (img[i*width + j] == 0)
+				img[i*width + j] = 1;
+			else
+				img[i*width + j] = 0;
+		}
+	}
+}
+
 #endif

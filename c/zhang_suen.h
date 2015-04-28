@@ -89,25 +89,24 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
     
     //thin = img;
     int a,b;
-    for(a=0; a<n; a++){
-        for(b=0; b<m; b++){
-            *(thin+(a*m)+b)=*(img+(a*m)+b);
+    for(a=0; a<m; a++){
+        for(b=0; b<n; b++){
+            *(thin+(a*n)+b)=*(img+(a*n)+b);
         }
     }
+
+    int * pts_to_remove= (int*)malloc(m*n*sizeof(int)*2);
     
     int did_change = 1;    
     //Note: pts_to_remove will be a linked list in C? or can just use an array
     //RUSS: I started to implement this in an array, but can be changed if linked list ends up being better
     while(did_change== 1){
-        int p = 1;
+        int p = 0;
         did_change = 0;
-        int * pts_to_remove= (int*)malloc(m*n*sizeof(int)*2);
         int i,j;
         //RUSS:ZERO OUT THE MATRIX
-        for(i=0;i<m*n;i++){
-            for(j=0;j<2;j++){
-                *(pts_to_remove+ i*2+j) = 0; //Note: Not sure if this loop dimensions is correct
-            }
+        for(i = 0; i < m*n*2; i++) {
+            *(pts_to_remove + i) = 0;
         }
         
         //Do the first subiteration
@@ -123,13 +122,13 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
             }
         }
         //Remove points found in the first subiteration
-        for(i=0; i<p-1;i++){
-            int k = pts_to_remove[p*2];
-            int l = pts_to_remove[p*2+1];
-            thin[k*2 + l] = 0;
+        for(i=0; i<p;i++){
+            int k = pts_to_remove[i*2];
+            int l = pts_to_remove[i*2+1];
+            thin[k*n + l] = 0;
         }
         
-        p=1;
+        p=0;
         
         //Do the second subiteration
         for(i=1;i<m-1;i++){
@@ -144,13 +143,13 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
         }
         
         //:Remove points found in second subiteration
-        for(i=0; i<p-1;i++){
-            int k = pts_to_remove[p*2];
-            int l = pts_to_remove[p*2+1];
-            thin[k*2 + l] = 0;
+        for(i=0; i<p;i++){
+            int k = pts_to_remove[i*2];
+            int l = pts_to_remove[i*2+1];
+            thin[k*n + l] = 0;
             
         }
-        free(pts_to_remove);
     }
+    free(pts_to_remove);
     return thin;
 }
