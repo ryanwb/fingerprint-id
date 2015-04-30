@@ -7,8 +7,8 @@
 #define padding 2
 #define windowXdim 3
 #define windowYdim 3
-#define MEDIANELEMENT 5 // (0.5)*windowXdim*windowYdim
-#define WINDOWSIZE windowXdim*windowYdim
+#define MEDIANELEMENT 4
+#define WINDOWSIZE (windowXdim*windowYdim)
 
 //BUBBLE SORT (REPLACEMENT FOR QSORT)
 void bubble_sort(unsigned char a[], int len)

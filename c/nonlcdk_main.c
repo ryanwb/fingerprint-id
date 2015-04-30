@@ -97,6 +97,7 @@ int main(void)
     printf("Skeletonizing...\n");
     unsigned char* zs_skeleton = zhang_suen(height, width, median);
     m_free(median);
+
     unsigned char* skeleton = zs_8conn(height, width, zs_skeleton);
     m_free(zs_skeleton);
 
@@ -112,27 +113,25 @@ int main(void)
     printf("Saving result...\n");
     /* Save result */
     out_bmp = bmp_from_binary_array(skeleton, width, height, depth);
-    m_free(skeleton);
 
-    // Put one green pixel where bifurcations are
+    // Put one red pixel where bifurcations are
     int i, j;
     for (i = 0; i < height; i++) {
         for (j = 0; j < width; j++) {
             if (cn_map[i*width + j] == 3) {
-                // TODO: THIS IS THROWING AN EXCEPTION?
-                BMP_SetPixelRGB(out_bmp, j, height-i-1, 0, 255, 0);
+                BMP_SetPixelRGB(out_bmp, j, height-i-1, 255, 0, 0);
             }
         }
     }
 
-    free(cn_map);
+    // free(cn_map);
 
     BMP_WriteFile(out_bmp, "104_2_out.bmp");
-    // TODO: THIS IS THROWING AN EXCEPTION?
-    // BMP_CHECK_ERROR(stderr, -2);
+    BMP_CHECK_ERROR(stderr, -2);
 
     /* Free all memory allocated for the image */
-    BMP_Free(out_bmp);
+    // BMP_Free(out_bmp);
+    // m_free(skeleton);
 
 	printf("Done!\n");
 	return 0;

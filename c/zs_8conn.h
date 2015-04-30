@@ -77,12 +77,9 @@ int is_8conn(int i, int j, unsigned char * img, int m, int n) {
 
 unsigned char * zs_8conn(int m, int n, unsigned char * in){
     unsigned char * out = (unsigned char*)malloc(m*n*sizeof(unsigned char));
-    int a,b;
-    for(a=0; a<m; a++){
-        for(b=0; b<n; b++){
-            *(out+(a*n)+b)=*(in+(a*n)+b);//out=in
-        }
-    }
+    int a;
+    for(a=0; a < m*n; a++)
+        out[a] = in[a]; // out = in
     
     int i,j;
     for(i=1;i<m-1;i++){
@@ -92,7 +89,7 @@ unsigned char * zs_8conn(int m, int n, unsigned char * in){
                     /* % if removing the point breaks 8-connectivity,
                      % don't actually remove the point*/
                     *(out+n*i+j)=0;
-                    if(is_8conn(i, j, out, m, n)){
+                    if(is_8conn(i, j, out, m, n) == 0){
                         *(out+n*i+j)=1;
                     }
                 }
