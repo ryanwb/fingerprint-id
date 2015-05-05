@@ -14,6 +14,13 @@
  *      3: Bifurcation
  *      4: Crossing
  */
+
+#define ISOLATED_POINT		0
+#define RIDGE_ENDING		1
+#define CONTINUING_RIDGE	2
+#define BIFURCATION			3
+#define CROSSING			4
+
 int* minutiae_cn_map(unsigned char* img, int width, int height)
 {
 	int* cn_map = m_malloc(width * height * sizeof(int));

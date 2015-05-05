@@ -10,10 +10,6 @@ n = min(n1,n2);
 
 heat.count = heat_one.count + heat_two.count;
 
-x.ridgeending = 0;
-x.bifurcation = 0;
-x.crossing = 0;
-
 heat.map = repmat(x,m,n);
 
 for i = 1:m
