@@ -10,6 +10,7 @@
 #include "zhang_suen.h"
 #include "zs_8conn.h"
 #include "minutiae_cn_map.h"
+#include "heat.h"
 #include <stdio.h>
 #include <math.h>
 
@@ -106,6 +107,9 @@ int main(void)
 
     // Make CN map
     int* cn_map = minutiae_cn_map(skeleton, width, height);
+
+    // Make a heat map from the CN map
+    heat_t heat = create_heatmap(cn_map, height, width);
 
 	// Flip it back upside down before display
 	upsidedown(skeleton, width, height);
