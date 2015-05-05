@@ -53,6 +53,27 @@ BMP* bmp_from_binary_array(unsigned char* array, UINT width, UINT height, USHORT
 	return bmp;
 }
 
+// For now, only make the heat map for bifurcations
+BMP* bmp_from_heatmap(heat_t heat, USHORT depth)
+{
+    BMP* bmp = BMP_Create(heat.width, heat.height, depth);
+
+    UCHAR   r, g, b;
+    UINT    i, j;
+
+    for (i = 0; i < heat.height; i++) {
+        for (j = 0; j < heat.width; j++) {
+            g = 0;
+            // TODO: THIS HEATMAX*X IS JUST A HACK SINCE SOME PTS ARE GOING OVER HEAT_MAX RIGHT NOW
+            r = (UCHAR)(255.0 * heat.map.bifurcation[i*heat.width + j]/(HEAT_MAX * 6));
+            b = (UCHAR)(255.0 * (HEAT_MAX*6 - heat.map.bifurcation[i*heat.width + j])/(HEAT_MAX*6));
+            BMP_SetPixelRGB( bmp, j, i, r, g, b );
+        }
+    }
+
+    return bmp;
+}
+
 int main(void)
 {
 	mem_init();
@@ -60,6 +81,7 @@ int main(void)
 
     BMP*    bmp;
     BMP*	out_bmp;
+    BMP*    heat_out_bmp;
     UCHAR   r, g, b;
     UINT    width, height;
     USHORT	depth;
@@ -105,16 +127,30 @@ int main(void)
     // Invert back
     invert_binary(skeleton, width, height);
 
+    printf("Creating heatmap...\n");
+
     // Make CN map
     int* cn_map = minutiae_cn_map(skeleton, width, height);
+
+    /*
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            printf("%d ", cn_map[i*width + j]);
+        }
+        printf("\n");
+    }
+    */
 
     // Make a heat map from the CN map
     heat_t heat = create_heatmap(cn_map, height, width);
     heat_t test_heat = create_heatmap(cn_map, height, width);
-    merge_heatmaps(&heat, &test_heat);
+    // merge_heatmaps(&heat, &test_heat);
 
 	// Flip it back upside down before display
 	upsidedown(skeleton, width, height);
+
+    // TODO: OUR HEAT MAP IS UPSIDE DOWN RIGHT NOW
+    heat_out_bmp = bmp_from_heatmap(heat, depth);
 
     printf("Saving result...\n");
     /* Save result */
@@ -130,10 +166,14 @@ int main(void)
         }
     }
 
-    // free heat maps here
+    // TODO: Free heat maps here also!
+
     // free(cn_map);
 
     BMP_WriteFile(out_bmp, "104_2_out.bmp");
+    BMP_CHECK_ERROR(stderr, -2);
+
+    BMP_WriteFile(heat_out_bmp, "heat_out.bmp");
     BMP_CHECK_ERROR(stderr, -2);
 
     /* Free all memory allocated for the image */

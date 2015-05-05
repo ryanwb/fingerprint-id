@@ -67,8 +67,10 @@ void blur_point(float* matrix, int height, int width, int i, int j)
 	int y, x;
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
-			float r = sqrt(pow(y-i, 2) + pow(x-j, 2));
-			matrix[y*width + x] += matrix[i*width + j] / r;
+			if (!(i == y && j == x)) {
+				float r = sqrt(pow(y-i, 2) + pow(x-j, 2));
+				matrix[y*width + x] += matrix[i*width + j] / r;
+			}
 		}
 	}
 }
@@ -115,12 +117,12 @@ void merge_heatmaps(heat_t * o_heat, heat_t * n_heat){
 	int i,j;
 	for(i=0; i<m; i++){
 		for(j=0; j<n; j++){
-			o_heat->map.ridgeending[i*n+j]=(o_heat->count/new_count)*o_heat->map.ridgeending[i*n+j]
-			+(n_heat->count/new_count)*n_heat->map.ridgeending[i*n+j];
-			o_heat->map.bifurcation[i*n+j]=(o_heat->count/new_count)*o_heat->map.bifurcation[i*n+j]
-			+(n_heat->count/new_count)*n_heat->map.bifurcation[i*n+j];
-			o_heat->map.crossing[i*n+j]=(o_heat->count/new_count)*o_heat->map.crossing[i*n+j]
-			+(n_heat->count/new_count)*n_heat->map.crossing[i*n+j];
+			o_heat->map.ridgeending[i*n+j]=((float)o_heat->count/new_count)*o_heat->map.ridgeending[i*n+j]
+			+((float)n_heat->count/new_count)*n_heat->map.ridgeending[i*n+j];
+			o_heat->map.bifurcation[i*n+j]=((float)o_heat->count/new_count)*o_heat->map.bifurcation[i*n+j]
+			+((float)n_heat->count/new_count)*n_heat->map.bifurcation[i*n+j];
+			o_heat->map.crossing[i*n+j]=((float)o_heat->count/new_count)*o_heat->map.crossing[i*n+j]
+			+((float)n_heat->count/new_count)*n_heat->map.crossing[i*n+j];
 		}
 	}
 	o_heat->count=new_count;
