@@ -110,6 +110,8 @@ int main(void)
 
     // Make a heat map from the CN map
     heat_t heat = create_heatmap(cn_map, height, width);
+    heat_t test_heat = create_heatmap(cn_map, height, width);
+    merge_heatmaps(&heat, &test_heat);
 
 	// Flip it back upside down before display
 	upsidedown(skeleton, width, height);
@@ -128,6 +130,7 @@ int main(void)
         }
     }
 
+    // free heat maps here
     // free(cn_map);
 
     BMP_WriteFile(out_bmp, "104_2_out.bmp");
