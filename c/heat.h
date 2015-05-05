@@ -27,6 +27,7 @@ typedef struct {
 	int height;
 	int width;
 	map_t map;
+	int count;
 } heat_t;
 
 #endif
