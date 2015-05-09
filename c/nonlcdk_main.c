@@ -61,12 +61,17 @@ BMP* bmp_from_heatmap(heat_t heat, USHORT depth)
     UCHAR   r, g, b;
     UINT    i, j;
 
+    // First find the max value
+    float max = HEAT_MIN;
+    for (i = 0; i < heat.height; i++)
+        for (j = 0; j < heat.width; j++)
+            max = heat.map.bifurcation[i*heat.width + j] > max ? heat.map.bifurcation[i*heat.width + j] : max;
+
     for (i = 0; i < heat.height; i++) {
         for (j = 0; j < heat.width; j++) {
             g = 0;
-            // TODO: THIS HEATMAX*X IS JUST A HACK SINCE SOME PTS ARE GOING OVER HEAT_MAX RIGHT NOW
-            r = (UCHAR)(255.0 * heat.map.bifurcation[i*heat.width + j]/(HEAT_MAX * 6));
-            b = (UCHAR)(255.0 * (HEAT_MAX*6 - heat.map.bifurcation[i*heat.width + j])/(HEAT_MAX*6));
+            r = (UCHAR)(255.0 * heat.map.bifurcation[i*heat.width + j]/max);
+            b = (UCHAR)(255.0 * (max - heat.map.bifurcation[i*heat.width + j])/max);
             BMP_SetPixelRGB( bmp, j, i, r, g, b );
         }
     }
@@ -88,7 +93,7 @@ int main(void)
     UINT    x, y;
 
     /* Read an image file */
-    bmp = BMP_ReadFile("104_2.bmp");
+    bmp = BMP_ReadFile("steve_one.bmp");
     BMP_CHECK_ERROR( stderr, -1 ); /* If an error has occurred, notify and exit */
 
     /* Get image's dimensions and depth */

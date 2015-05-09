@@ -24,6 +24,27 @@ typedef struct {
 	int count;
 } heat_t;
 
+/* compute_match_score
+ * Returns a "score" for how good of a match the two heatmaps are
+ * Higher scores mean the match is better
+ */
+float compute_match_score(heat_t heat_a, heat_t heat_b)
+{
+	// TODO: FOR NOW THIS ONLY LOOKS AT BIFURCATIONS
+	float score = 0.0;
+	int h = heat_a.height;
+	int w = heat_a.width;
+	// We can scale our pixel match value by N if we want
+	// float N = (float)(h * w);
+	int i, j;
+	for (i = 0; i < h; i++) {
+		for (j = 0; j < w; j++) {
+			score += (heat_a.map.bifurcation[i*w + j] * heat_b.map.bifurcation[i*w + j]);
+		}
+	}
+	return score;
+}
+
 /* initialize_heatmap_body
  * Initialize a new heatmap by allocating memory for the contents
  */
@@ -50,9 +71,9 @@ void initialize_heatmap_body(heat_t* heat, int height, int width)
  */
 void free_heatmap_body(heat_t* heat)
 {
-	free(heat->map.ridgeending);
-	free(heat->map.bifurcation);
-	free(heat->map.crossing);
+	m_free(heat->map.ridgeending);
+	m_free(heat->map.bifurcation);
+	m_free(heat->map.crossing);
 }
 
 /* blur_point
@@ -67,10 +88,16 @@ void blur_point(float* matrix, int height, int width, int i, int j)
 	int y, x;
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
+			// New method:
+			float r = sqrt(pow((float)(y-i), 2) + pow((float)(x-j), 2));
+			matrix[y*width + x] += matrix[i*width + j] / (1.0 + r);
+			// Old method:
+			/*
 			if (!(i == y && j == x)) {
 				float r = sqrt(pow(y-i, 2) + pow(x-j, 2));
 				matrix[y*width + x] += matrix[i*width + j] / r;
 			}
+			*/
 		}
 	}
 }
@@ -86,20 +113,25 @@ heat_t create_heatmap(int* cn_map, int height, int width)
 	// Add the peaks of the new heatmap
 	for (i = 0; i < height; i++) {
 		for (j = 0; j < width; j++) {
-			if (cn_map[i*width + j] == RIDGE_ENDING) {
+			if (cn_map[i*width + j] == RIDGE_ENDING)
 				// Add the peak
 				heat.map.ridgeending[i*width + j] = HEAT_MAX;
-				// Now spread it out to form a "mountain"
-				blur_point(heat.map.ridgeending, height, width, i, j);
-			}
-			else if (cn_map[i*width + j] == BIFURCATION) {
+			else if (cn_map[i*width + j] == BIFURCATION)
 				heat.map.bifurcation[i*width + j] = HEAT_MAX;
-				blur_point(heat.map.bifurcation, height, width, i, j);
-			}
-			else if (cn_map[i*width + j] == CROSSING) {
+			else if (cn_map[i*width + j] == CROSSING)
 				heat.map.crossing[i*width + j] = HEAT_MAX;
+		}
+	}
+	// Now blur the hot points
+	for (i = 0; i < height; i++) {
+		for (j = 0; j < width; j++) {
+			if (cn_map[i*width + j] == RIDGE_ENDING)
+				// Spread it out to form a "mountain"
+				blur_point(heat.map.ridgeending, height, width, i, j);
+			else if (cn_map[i*width + j] == BIFURCATION)
+				blur_point(heat.map.bifurcation, height, width, i, j);
+			else if (cn_map[i*width + j] == CROSSING)
 				blur_point(heat.map.crossing, height, width, i, j);
-			}
 		}
 	}
 	return heat;
