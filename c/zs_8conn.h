@@ -45,7 +45,6 @@ int flood_count(int i, int j, unsigned char * img, int x, int y, int m, int n){
 
 
 int is_8conn(int i, int j, unsigned char * img, int m, int n) {
-    int r;
     int n_black=0;
     int x,y;
     for(y=i-1;y<i+2;y++)
@@ -61,11 +60,11 @@ int is_8conn(int i, int j, unsigned char * img, int m, int n) {
     {
         for (x=j-1; x<j+2; x++) {
             if(*(img+y*n+x)==1){
-                int n=flood_count(i, j, img, x, y, m, n);
-                if(n_black==n){
+                int result = flood_count(i, j, img, x, y, m, n);
+                if (n_black == result) {
                     return 1;
                 }
-                else{
+                else {
                     return 0;
                 }
             }

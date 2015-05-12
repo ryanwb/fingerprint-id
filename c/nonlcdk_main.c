@@ -1,6 +1,6 @@
 /*
  * This is the main program for the non-LCDK implementation of fingerprint-id!
- * Build me: gcc qdbmp.c nonlcdk_main.c -o nonlcdk_main.out
+ * Build me: gcc -Wall -Wextra qdbmp.c nonlcdk_main.c -o nonlcdk_main.out
  */
 
 #include "qdbmp.h"
@@ -39,8 +39,6 @@ unsigned char* array_from_bmp(BMP* bmp, UINT width, UINT height)
 BMP* bmp_from_binary_array(unsigned char* array, UINT width, UINT height, USHORT depth)
 {
 	BMP* bmp = BMP_Create(width, height, depth);
-
-	UCHAR   r, g, b;
 	UINT	x, y;
 
 	for (x = 0; x < width; ++x) {
@@ -59,7 +57,7 @@ BMP* bmp_from_heatmap(heat_t heat, USHORT depth)
     BMP* bmp = BMP_Create(heat.width, heat.height, depth);
 
     UCHAR   r, g, b;
-    UINT    i, j;
+    int    i, j;
 
     // First find the max value
     float max = HEAT_MIN;
@@ -87,19 +85,17 @@ int main(void)
     BMP*    bmp;
     BMP*	out_bmp;
     BMP*    heat_out_bmp;
-    UCHAR   r, g, b;
-    UINT    width, height;
+    int    width, height;
     USHORT	depth;
-    UINT    x, y;
     unsigned char bw_threshold;
 
     /* Read an image file */
-    bmp = BMP_ReadFile("steve_one.bmp");
+    bmp = BMP_ReadFile("johnny.bmp");
     BMP_CHECK_ERROR( stderr, -1 ); /* If an error has occurred, notify and exit */
 
     /* Get image's dimensions and depth */
-    width = BMP_GetWidth( bmp );
-    height = BMP_GetHeight( bmp );
+    width = (int)BMP_GetWidth( bmp );
+    height = (int)BMP_GetHeight( bmp );
     depth = BMP_GetDepth( bmp );
 
     // Put the bitmap in memory
@@ -152,15 +148,15 @@ int main(void)
     */
 
     // Make a heat map from the CN map
-    //heat_t heat = create_heatmap(cn_map, height, width);
+    heat_t heat = create_heatmap(cn_map, height, width);
     //heat_t test_heat = create_heatmap(cn_map, height, width);
-    // merge_heatmaps(&heat, &test_heat);
+    //merge_heatmaps(&heat, &test_heat);
 
 	// Flip it back upside down before display
 	upsidedown(skeleton, width, height);
 
     // TODO: OUR HEAT MAP IS UPSIDE DOWN RIGHT NOW
-    //heat_out_bmp = bmp_from_heatmap(heat, depth);
+    heat_out_bmp = bmp_from_heatmap(heat, depth);
 
     printf("Saving result...\n");
     /* Save result */
@@ -180,10 +176,10 @@ int main(void)
 
     // free(cn_map);
 
-    BMP_WriteFile(out_bmp, "104_2_out.bmp");
+    BMP_WriteFile(out_bmp, "johnny_out.bmp");
     //BMP_CHECK_ERROR(stderr, -2);
 
-    //BMP_WriteFile(heat_out_bmp, "heat_out.bmp");
+    BMP_WriteFile(heat_out_bmp, "heat_out.bmp");
     //BMP_CHECK_ERROR(stderr, -2);
 
     /* Free all memory allocated for the image */

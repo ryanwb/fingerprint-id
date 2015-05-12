@@ -50,8 +50,8 @@ unsigned char* to_greyscale(unsigned char* bmp, int width, int height)
  */
 void binarize(unsigned char* img, int width, int height, unsigned char threshold)
 {
-	unsigned int N = width * height;
-	unsigned int i;
+	int N = width * height;
+	int i;
 	for (i = 0; i < N; i++)
 		img[i] = img[i] < threshold ? BBLACK: BWHITE;
 }
@@ -64,7 +64,7 @@ void binarize(unsigned char* img, int width, int height, unsigned char threshold
  */
 void upsidedown(unsigned char* img, int width, int height)
 {
-	unsigned int i, j;
+	int i, j;
 	for (i = 0; i < height/2; i++) {
 		for (j = 0; j < width; j++) {
 			// Swap the upper-half and lower-half pixels
@@ -82,7 +82,7 @@ void upsidedown(unsigned char* img, int width, int height)
  */
 void invert_binary(unsigned char* img, int width, int height)
 {
-	unsigned int i, j;
+	int i, j;
 	for (i = 0; i < height; i++) {
 		for (j = 0; j < width; j++) {
 			if (img[i*width + j] == 0)

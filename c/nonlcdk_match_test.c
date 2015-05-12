@@ -1,6 +1,6 @@
 /*
  * This is a program to test matching of fingerprints
- * Build me: gcc qdbmp.c nonlcdk_match_test.c -o nonlcdk_match_test.out
+ * Build me: gcc -Wall -Wextra qdbmp.c nonlcdk_match_test.c -o nonlcdk_match_test.out
  */
 
 #include "qdbmp.h"
@@ -40,7 +40,6 @@ BMP* bmp_from_binary_array(unsigned char* array, UINT width, UINT height, USHORT
 {
 	BMP* bmp = BMP_Create(width, height, depth);
 
-	UCHAR   r, g, b;
 	UINT	x, y;
 
 	for (x = 0; x < width; ++x) {
@@ -59,7 +58,7 @@ BMP* bmp_from_heatmap(heat_t heat, USHORT depth)
     BMP* bmp = BMP_Create(heat.width, heat.height, depth);
 
     UCHAR   r, g, b;
-    UINT    i, j;
+    int    i, j;
 
     // First find the max value
     float max = HEAT_MIN;
@@ -98,8 +97,7 @@ int main(void)
         BMP *bmp;
         // BMP *out_bmp;
         // BMP *heat_out_bmp;
-        UCHAR   r, g, b;
-        UINT    width, height;
+        int    width, height;
         USHORT  depth;
         unsigned char bw_threshold;
 
@@ -107,8 +105,8 @@ int main(void)
         // BMP_CHECK_ERROR( stderr, -1 ); /* If an error has occurred, notify and exit */
 
         /* Get image's dimensions and depth */
-        width = BMP_GetWidth( bmp );
-        height = BMP_GetHeight( bmp );
+        width = (int)BMP_GetWidth( bmp );
+        height = (int)BMP_GetHeight( bmp );
         depth = BMP_GetDepth( bmp );
 
         // Put the bitmap in memory
