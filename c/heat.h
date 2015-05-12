@@ -30,15 +30,12 @@ typedef struct {
  */
 float compute_match_score(heat_t heat_a, heat_t heat_b)
 {
-
-	// TODO: this matching doesn't work quite yet
-
 	// TODO: FOR NOW THIS ONLY LOOKS AT BIFURCATIONS
 	float score = 0.0;
 	int h = heat_a.height;
 	int w = heat_a.width;
 	// We can scale our pixel match value by N if we want
-	float N = (float)(h * w);
+	// float N = (float)(h * w);
 	int i, j;
 
 	// First find total heat in each map we're looking at, so we can normalize them against eachother
@@ -50,16 +47,14 @@ float compute_match_score(heat_t heat_a, heat_t heat_b)
 			b_sum += heat_b.map.bifurcation[i*w + j];
 		}
 	}
-	a_sum /= N;
-	b_sum /= N;
 
 	// Now compute the scores using the normalization
 	for (i = 0; i < h; i++) {
 		for (j = 0; j < w; j++) {
-			score += heat_a.map.bifurcation[i*w + j]/a_sum * heat_b.map.bifurcation[i*w + j]/b_sum;
+			score += fabsf(heat_a.map.bifurcation[i*w + j]/a_sum - heat_b.map.bifurcation[i*w + j]/b_sum);
 		}
 	}
-	return score;
+	return 1.0 - score;
 }
 
 /* initialize_heatmap_body
