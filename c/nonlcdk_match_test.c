@@ -101,9 +101,10 @@ int main(void)
         UCHAR   r, g, b;
         UINT    width, height;
         USHORT  depth;
+        unsigned char bw_threshold;
 
         bmp = BMP_ReadFile(files[k]);
-        BMP_CHECK_ERROR( stderr, -1 ); /* If an error has occurred, notify and exit */
+        // BMP_CHECK_ERROR( stderr, -1 ); /* If an error has occurred, notify and exit */
 
         /* Get image's dimensions and depth */
         width = BMP_GetWidth( bmp );
@@ -114,29 +115,33 @@ int main(void)
         unsigned char* bitmap = array_from_bmp(bmp, width, height);
 
         /* Free all memory allocated for the image */
-        BMP_Free(bmp);
+        // BMP_Free(bmp);
 
-        printf("Rendering as black and white...\n");
-    	unsigned char* binary = to_bw(bitmap, width, height); // load the image in black & white
-    	m_free(bitmap);
+        printf("Rendering as greyscale...\n");
+        unsigned char* binary = to_greyscale(bitmap, width, height); // load the image in black & white
+        // m_free(bitmap);
 
-        printf("Binarizing...\n");
-    	binarize(binary, width, height); // binarize the image (in-place)
-    	upsidedown(binary, width, height); // flip it upside down (in-place)
+        // Calculate the threshold to use for black and white conversion
+        printf("Calculating black and white threshold...\n");
+        bw_threshold = find_threshold(binary, width, height);
+
+        printf("Binarizing... threshold: %d\n", bw_threshold);
+        binarize(binary, width, height, bw_threshold); // binarize the image (in-place)
+        upsidedown(binary, width, height); // flip it upside down (in-place)
 
         printf("Running median filter...\n");
-    	unsigned char* median = med_filter(binary, width, height);
-    	m_free(binary);
+        unsigned char* median = med_filter(binary, width, height);
+        // m_free(binary);
 
         // Invert the pixels for skeletonization
         invert_binary(median, width, height);
 
         printf("Skeletonizing...\n");
         unsigned char* zs_skeleton = zhang_suen(height, width, median);
-        m_free(median);
+        // m_free(median);
 
         unsigned char* skeleton = zs_8conn(height, width, zs_skeleton);
-        m_free(zs_skeleton);
+        // m_free(zs_skeleton);
 
         // Invert back
         invert_binary(skeleton, width, height);
@@ -171,7 +176,7 @@ int main(void)
         }
         */
 
-        m_free(cn_map);
+        // m_free(cn_map);
 
         // BMP_WriteFile(out_bmp, "104_2_out.bmp");
         // BMP_CHECK_ERROR(stderr, -2);
@@ -181,7 +186,7 @@ int main(void)
 
         /* Free all memory allocated for the image */
         // BMP_Free(out_bmp);
-        m_free(skeleton);
+        // m_free(skeleton);
 
     	printf("Done!\n");
     }
@@ -194,7 +199,7 @@ int main(void)
             printf("%d-%d score: %.4f\n", a, b, compute_match_score(heat[a], heat[b]));
 
     for (k = 0; k < N; k++)
-        free_heatmap_body(&heat[k]);
+        // free_heatmap_body(&heat[k]);
 
     printf("Exiting...\n");
     return 0;

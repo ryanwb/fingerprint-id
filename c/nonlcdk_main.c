@@ -91,6 +91,7 @@ int main(void)
     UINT    width, height;
     USHORT	depth;
     UINT    x, y;
+    unsigned char bw_threshold;
 
     /* Read an image file */
     bmp = BMP_ReadFile("steve_one.bmp");
@@ -107,12 +108,16 @@ int main(void)
     /* Free all memory allocated for the image */
     BMP_Free(bmp);
 
-    printf("Rendering as black and white...\n");
-	unsigned char* binary = to_bw(bitmap, width, height); // load the image in black & white
+    printf("Rendering as greyscale...\n");
+	unsigned char* binary = to_greyscale(bitmap, width, height); // load the image in black & white
 	m_free(bitmap);
 
-    printf("Binarizing...\n");
-	binarize(binary, width, height); // binarize the image (in-place)
+    // Calculate the threshold to use for black and white conversion
+    printf("Calculating black and white threshold...\n");
+    bw_threshold = find_threshold(binary, width, height);
+
+    printf("Binarizing... threshold: %d\n", bw_threshold);
+	binarize(binary, width, height, bw_threshold); // binarize the image (in-place)
 	upsidedown(binary, width, height); // flip it upside down (in-place)
 
     printf("Running median filter...\n");
@@ -147,15 +152,15 @@ int main(void)
     */
 
     // Make a heat map from the CN map
-    heat_t heat = create_heatmap(cn_map, height, width);
-    heat_t test_heat = create_heatmap(cn_map, height, width);
+    //heat_t heat = create_heatmap(cn_map, height, width);
+    //heat_t test_heat = create_heatmap(cn_map, height, width);
     // merge_heatmaps(&heat, &test_heat);
 
 	// Flip it back upside down before display
 	upsidedown(skeleton, width, height);
 
     // TODO: OUR HEAT MAP IS UPSIDE DOWN RIGHT NOW
-    heat_out_bmp = bmp_from_heatmap(heat, depth);
+    //heat_out_bmp = bmp_from_heatmap(heat, depth);
 
     printf("Saving result...\n");
     /* Save result */
@@ -176,10 +181,10 @@ int main(void)
     // free(cn_map);
 
     BMP_WriteFile(out_bmp, "104_2_out.bmp");
-    BMP_CHECK_ERROR(stderr, -2);
+    //BMP_CHECK_ERROR(stderr, -2);
 
-    BMP_WriteFile(heat_out_bmp, "heat_out.bmp");
-    BMP_CHECK_ERROR(stderr, -2);
+    //BMP_WriteFile(heat_out_bmp, "heat_out.bmp");
+    //BMP_CHECK_ERROR(stderr, -2);
 
     /* Free all memory allocated for the image */
     // BMP_Free(out_bmp);

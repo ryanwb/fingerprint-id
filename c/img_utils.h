@@ -3,17 +3,28 @@
 
 #include "img_params.h"
 #include "m_mem.h"
+#include "find_median.h"
+
+// TODO: Change these so that they don't alloc new memory, but work in-place (when it makes sense to do so)
+
+/* find_threshold
+ * Finds the "threshold" greyscale value to be used for later black and white conversion
+ */
+unsigned char find_threshold(unsigned char* image, int width, int height)
+{
+	return (unsigned char)find_median(image, width * height);
+}
 
 /* to_bw
  * Converts a BMP image with RGB values 0-255 to a 0/255 matrix
  */
-unsigned char* to_bw(unsigned char* bmp, int width, int height)
+unsigned char* to_bw(unsigned char* bmp, int width, int height, unsigned char threshold)
 {
 	unsigned int N = width * height;
 	unsigned char* b = m_malloc(N * sizeof(unsigned char));
 	unsigned int i;
 	for (i = 0; i < N * 3; i += 3) {
-		if (bmp[i] < THRESHOLD && bmp[i+1] < THRESHOLD && bmp[i+2] < THRESHOLD)
+		if (bmp[i] < threshold && bmp[i+1] < threshold && bmp[i+2] < threshold)
 			b[i/3] = BLACK;
 		else
 			b[i/3] = WHITE;
@@ -21,15 +32,28 @@ unsigned char* to_bw(unsigned char* bmp, int width, int height)
 	return b;
 }
 
-/* binarize
- * Converts a greyscale matrix with values 0-255 to a 0/1 matrix
+/* to_greyscale
+ * Converts a BMP image with RGB values 0-255 to a 0-255 greyscale matrix
  */
-void binarize(unsigned char* img, int width, int height)
+unsigned char* to_greyscale(unsigned char* bmp, int width, int height)
+{
+	unsigned int N = width * height;
+	unsigned char* b = m_malloc(N * sizeof(unsigned char));
+	unsigned int i;
+	for (i = 0; i < N * 3; i += 3)
+		b[i/3] = bmp[i]/3 + bmp[i+1]/3 + bmp[i+2]/3;
+	return b;
+}
+
+/* binarize
+ * Converts a greyscale matrix with values 0-255 to a 0/1 matrix (in-place)
+ */
+void binarize(unsigned char* img, int width, int height, unsigned char threshold)
 {
 	unsigned int N = width * height;
 	unsigned int i;
 	for (i = 0; i < N; i++)
-		img[i] = img[i] < THRESHOLD ? BBLACK: BWHITE;
+		img[i] = img[i] < threshold ? BBLACK: BWHITE;
 }
 
 

@@ -2,10 +2,11 @@
 #define IMG_PARAMS_H
 
 // Black and white values
-#define WHITE 255		// White value
-#define BWHITE 1		// Binary white value
-#define BLACK 0			// Black value
-#define BBLACK 0		// Binary black value
-#define THRESHOLD 245	// Threshold to distinguish between black vs white
+#define WHITE 255		    // White value
+#define BWHITE 1		    // Binary white value
+#define BLACK 0			    // Black value
+#define BBLACK 0		    // Binary black value
+// #define THRESHOLD 245    // Threshold to distinguish between black vs white
+// Updated: need to use a dynamic threshold, e.g. the median value of the image
 
 #endif

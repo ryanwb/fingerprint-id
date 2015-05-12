@@ -1,5 +1,8 @@
+#ifndef FIND_MEDIAN_H
+#define FIND_MEDIAN_H
+
 //MERGE TWO ARRAYS
-void merge (int *A, int a, int *B, int b, int *C) 
+void merge(unsigned char *A, int a, unsigned char *B, int b, unsigned char *C) 
 {
   int i,j,k;
   i = 0; 
@@ -34,17 +37,18 @@ void merge (int *A, int a, int *B, int b, int *C)
 }  
 
 //MERGESORT
-void mergesort(float * A, int n){
+void merge_sort(unsigned char *A, int n){
 	int i;
-	int *A1, *A2;
+	unsigned char *A1, *A2;
 	int n1, n2;
 	if (n<2){
 		return;
 	}
+
 	n1= n/2;
 	n2=n-n1;
-	A1=(float*)malloc(sizeof(float)*n1);
-	A1=(float*)malloc(sizeof(float)*n2);
+	A1=(unsigned char*)m_malloc(sizeof(unsigned char)*n1);
+	A2=(unsigned char*)m_malloc(sizeof(unsigned char)*n2);
 
 	for(i=0;i<n1;i++){
 		A1[i]=A[i];
@@ -52,15 +56,27 @@ void mergesort(float * A, int n){
 	for(i=0;i<n2;i++){
 		A2[i]=A[i+n1];
 	}
-	mergesort(A1,n1);
-	mergesort(A2,n2);
+	merge_sort(A1,n1);
+	merge_sort(A2,n2);
 
 	merge(A1,n1,A2,n2,A);
-	free(A1);
-	free(A2);
+	m_free(A1);
+	m_free(A2);
 }
 
-float find_median(float * array, int n){
-	mergesort(array, n);
-	return array[n/2];
+unsigned char find_median(unsigned char * data, int n) {
+  // first, copy the input so we don't modify it
+  unsigned char *array = (unsigned char*)m_malloc(sizeof(unsigned char)*n);
+  int i;
+  unsigned char median;
+  for (i = 0; i < n; i++)
+    array[i] = data[i];
+
+  merge_sort(array, n);
+
+	median = array[n/2];
+  m_free(array);
+	return median;
 }
+
+#endif
