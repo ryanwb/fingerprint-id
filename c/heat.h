@@ -30,31 +30,41 @@ typedef struct {
  */
 float compute_match_score(heat_t heat_a, heat_t heat_b)
 {
-	// TODO: FOR NOW THIS ONLY LOOKS AT BIFURCATIONS
 	float score = 0.0;
-	int h = heat_a.height;
-	int w = heat_a.width;
+	int h = heat_a.height < heat_b.height ? heat_a.height : heat_b.height;
+	int w = heat_a.width < heat_b.width ? heat_a.width : heat_b.width;
 	// We can scale our pixel match value by N if we want
 	// float N = (float)(h * w);
 	int i, j;
 
 	// First find total heat in each map we're looking at, so we can normalize them against eachother
-	float b_sum = HEAT_MIN;
-	float a_sum = HEAT_MIN;
+	float a_bif_sum = HEAT_MIN;
+	float b_bif_sum = HEAT_MIN;
+	float a_re_sum = HEAT_MIN;
+	float b_re_sum = HEAT_MIN;
+	float a_cros_sum = HEAT_MIN;
+	float b_cros_sum = HEAT_MIN;
 	for (i = 0; i < h; i++) {
 		for (j = 0; j < w; j++) {
-			a_sum += heat_a.map.bifurcation[i*w + j];
-			b_sum += heat_b.map.bifurcation[i*w + j];
+			a_bif_sum += heat_a.map.bifurcation[i*w + j];
+			b_bif_sum += heat_b.map.bifurcation[i*w + j];
+			a_re_sum += heat_a.map.ridgeending[i*w + j];
+			b_re_sum += heat_b.map.ridgeending[i*w + j];
+			a_cros_sum += heat_a.map.crossing[i*w + j];
+			b_cros_sum += heat_b.map.crossing[i*w + j];
 		}
 	}
 
 	// Now compute the scores using the normalization
 	for (i = 0; i < h; i++) {
 		for (j = 0; j < w; j++) {
-			score += fabsf(heat_a.map.bifurcation[i*w + j]/a_sum - heat_b.map.bifurcation[i*w + j]/b_sum);
+			score += fabsf(heat_a.map.bifurcation[i*w + j]/a_bif_sum - heat_b.map.bifurcation[i*w + j]/b_bif_sum);
+			score += fabsf(heat_a.map.ridgeending[i*w + j]/a_re_sum - heat_b.map.ridgeending[i*w + j]/b_re_sum);
+			score += fabsf(heat_a.map.crossing[i*w + j]/a_cros_sum - heat_b.map.crossing[i*w + j]/b_cros_sum);
 		}
 	}
-	return 1.0 - score;
+	// TODO: BETTER SCORING
+	return 1.0 - score/3.0;
 }
 
 /* initialize_heatmap_body

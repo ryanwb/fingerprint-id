@@ -1,5 +1,14 @@
-#ifndef FIND_MEDIAN_H
-#define FIND_MEDIAN_H
+#ifndef MEAN_MEDIAN_UTILS_H
+#define MEAN_MEDIAN_UTILS_H
+
+unsigned char find_mean(unsigned char* data, int n)
+{
+  int i;
+  float mean = 0.0;
+  for (i = 0; i < n; i++)
+    mean += (float)data[i];
+  return (unsigned char)(mean / (float)n);
+}
 
 //MERGE TWO ARRAYS
 void merge(unsigned char *A, int a, unsigned char *B, int b, unsigned char *C) 

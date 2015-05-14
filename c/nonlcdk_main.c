@@ -90,7 +90,7 @@ int main(void)
     unsigned char bw_threshold;
 
     /* Read an image file */
-    bmp = BMP_ReadFile("johnny.bmp");
+    bmp = BMP_ReadFile("6a.bmp");
     BMP_CHECK_ERROR( stderr, -1 ); /* If an error has occurred, notify and exit */
 
     /* Get image's dimensions and depth */
@@ -172,19 +172,19 @@ int main(void)
         }
     }
 
-    // TODO: Free heat maps here also!
+    m_free(cn_map);
 
-    // free(cn_map);
+    BMP_WriteFile(out_bmp, "out.bmp");
+    BMP_CHECK_ERROR(stderr, -2);
 
-    BMP_WriteFile(out_bmp, "johnny_out.bmp");
-    //BMP_CHECK_ERROR(stderr, -2);
-
-    BMP_WriteFile(heat_out_bmp, "heat_out.bmp");
-    //BMP_CHECK_ERROR(stderr, -2);
+    BMP_WriteFile(heat_out_bmp, "heat.bmp");
+    BMP_CHECK_ERROR(stderr, -2);
 
     /* Free all memory allocated for the image */
-    // BMP_Free(out_bmp);
-    // m_free(skeleton);
+    BMP_Free(out_bmp);
+    BMP_Free(heat_out_bmp);
+    m_free(skeleton);
+    free_heatmap_body(&heat);
 
 	printf("Done!\n");
 	return 0;

@@ -3,7 +3,7 @@
 
 #include "img_params.h"
 #include "m_mem.h"
-#include "find_median.h"
+#include "mean_median_utils.h"
 
 // TODO: Change these so that they don't alloc new memory, but work in-place (when it makes sense to do so)
 
@@ -12,7 +12,8 @@
  */
 unsigned char find_threshold(unsigned char* image, int width, int height)
 {
-	return (unsigned char)find_median(image, width * height);
+	// TODO: Find a better (adaptive?) threshold, if we have time
+	return find_mean(image, width * height) - 15;
 }
 
 /* to_bw
