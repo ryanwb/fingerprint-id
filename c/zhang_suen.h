@@ -88,7 +88,7 @@ int SUBCOND_TWO(int i , int j ,int rMax, unsigned char* img) {
 }
 
 unsigned char* zhang_suen(int m, int n, unsigned char* img) {
-    unsigned char* thin = (unsigned char*)malloc(m*n*sizeof(unsigned char));
+    unsigned char* thin = (unsigned char*)m_malloc(m*n*sizeof(unsigned char));
     
     //thin = img;
     int a,b;
@@ -98,7 +98,7 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
         }
     }
 
-    int * pts_to_remove= (int*)malloc(m*n*sizeof(int)*2);
+    int * pts_to_remove= (int*)m_malloc(m*n*sizeof(int)*2);
     
     int did_change = 1;    
     //Note: pts_to_remove will be a linked list in C? or can just use an array
@@ -153,7 +153,7 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
             
         }
     }
-    free(pts_to_remove);
+    m_free(pts_to_remove);
     return thin;
 }
 

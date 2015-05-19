@@ -31,7 +31,7 @@ int flood_count_recursive(int i, int j, unsigned char * nimg, int x, int y, int 
 }
 
 int flood_count(int i, int j, unsigned char * img, int x, int y, int m, int n){
-    unsigned char * nimg=(unsigned char*)malloc(m*n*sizeof(unsigned char));
+    unsigned char * nimg=(unsigned char*)m_malloc(m*n*sizeof(unsigned char));
     int a, b;
     for (a=0; a<m; a++) {
         for (b=0; b<n; b++) {
@@ -39,7 +39,7 @@ int flood_count(int i, int j, unsigned char * img, int x, int y, int m, int n){
         }
     }
     flood_count_recursive(i, j, nimg, x, y, m, n);
-    free(nimg);
+    m_free(nimg);
     return n;
 }
 
@@ -75,7 +75,7 @@ int is_8conn(int i, int j, unsigned char * img, int m, int n) {
 }
 
 unsigned char * zs_8conn(int m, int n, unsigned char * in){
-    unsigned char * out = (unsigned char*)malloc(m*n*sizeof(unsigned char));
+    unsigned char * out = (unsigned char*)m_malloc(m*n*sizeof(unsigned char));
     int a;
     for(a=0; a < m*n; a++)
         out[a] = in[a]; // out = in

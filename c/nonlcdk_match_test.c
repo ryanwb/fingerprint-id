@@ -193,7 +193,7 @@ int main(void)
 
     int a, b;
     for (a = 0; a < N; a++)
-        for (b = a; b < N; b++)
+        for (b = 0; b < N; b++)
             printf("%d-%d score: %.4f\n", a, b, compute_match_score(heat[a], heat[b]));
 
     for (k = 0; k < N; k++)
