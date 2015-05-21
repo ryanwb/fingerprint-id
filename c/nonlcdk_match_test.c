@@ -112,6 +112,16 @@ int main(void)
         // Put the bitmap in memory
         unsigned char* bitmap = array_from_bmp(bmp, width, height);
 
+        // Print the raw bitmap, for debugging
+        /*
+        for (int a = 0; a < height; a++) {
+            for (int b = 0; b < width; b++) {
+                printf("%d ", bitmap[a*width + b]);
+            }
+            printf("\n");
+        }
+        */
+
         /* Free all memory allocated for the image */
         BMP_Free(bmp);
 
@@ -192,9 +202,19 @@ int main(void)
     printf("All %d heatmaps created!\n", N);
 
     int a, b;
-    for (a = 0; a < N; a++)
-        for (b = 0; b < N; b++)
-            printf("%d-%d score: %.4f\n", a, b, compute_match_score(heat[a], heat[b]));
+    for (a = 0; a < N; a++) {
+        int best_match = -1;
+        float best_score = 999;
+        for (b = 0; b < N; b++) {
+            float this_score = compute_match_score(heat[a], heat[b]);
+            printf("%d-%d score: %.4f\n", a, b, this_score);
+            if (a != b && this_score < best_score) {
+                best_score = this_score;
+                best_match = b;
+            }
+        }
+        printf("%d matches: %d\n", a, best_match);
+    }
 
     for (k = 0; k < N; k++)
         free_heatmap_body(&heat[k]);

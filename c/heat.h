@@ -26,7 +26,7 @@ typedef struct {
 
 /* compute_match_score
  * Returns a "score" for how good of a match the two heatmaps are
- * Higher scores mean the match is better
+ * Lower scores mean the match is better
  */
 float compute_match_score(heat_t heat_a, heat_t heat_b)
 {
@@ -64,7 +64,7 @@ float compute_match_score(heat_t heat_a, heat_t heat_b)
 		}
 	}
 	// TODO: BETTER SCORING
-	return 1.0 - score/2.0;
+	return score;
 }
 
 /* initialize_heatmap_body
@@ -101,28 +101,37 @@ void free_heatmap_body(heat_t* heat)
 /* blur_point
  * Spreads a point i,j out around its neighboring points in a float matrix
  */
+
 void blur_point(float* matrix, int height, int width, int i, int j)
 {
-	/* Right now, this is a pretty trivial/slow algorithm!
-	 * We look at each point in the image add to that
-	 * pixel by an amount inversely proportional to its distance.
-	 */
+	// We'll only modify points in a box_size*2+1 by box_size*2+1 square around the point to blur
+	int box_size = 4;
+	int y_start = i - box_size >= 0 ? i - box_size : 0;
+	int y_end = i + box_size <= height ? i + box_size : height;
+	int x_start = j - box_size >= 0 ? j - box_size : 0;
+	int x_end = j + box_size <= width ? j + box_size : width;
+	int y, x;
+	for (y = y_start; y < y_end; y++) {
+		for (x = x_start; x < x_end; x++) {
+			float r = sqrt(pow((float)(y-i), 2) + pow((float)(x-j), 2));
+			matrix[y*width + x] += matrix[i*width + j] / (1.0 + r);
+		}
+	}
+}
+
+/*
+void blur_point(float* matrix, int height, int width, int i, int j)
+{
 	int y, x;
 	for (y = 0; y < height; y++) {
 		for (x = 0; x < width; x++) {
 			// New method:
 			float r = sqrt(pow((float)(y-i), 2) + pow((float)(x-j), 2));
 			matrix[y*width + x] += matrix[i*width + j] / (1.0 + r);
-			// Old method:
-			/*
-			if (!(i == y && j == x)) {
-				float r = sqrt(pow(y-i, 2) + pow(x-j, 2));
-				matrix[y*width + x] += matrix[i*width + j] / r;
-			}
-			*/
 		}
 	}
 }
+*/
 
 /* create_heatmap
  * Creates a new heatmap based on an input crossing number map
