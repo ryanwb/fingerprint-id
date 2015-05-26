@@ -85,8 +85,8 @@ int main(void)
 
 	printf("Reading bitmaps...\n");
 
-    char* files[N] = { "1a.bmp", "2a.bmp", "3a.bmp", "4a.bmp", "5a.bmp", "6a.bmp",
-                       "1b.bmp", "2b.bmp", "3b.bmp", "4b.bmp", "5b.bmp", "6b.bmp" };
+    char* files[N] = { "1b.bmp", "2b.bmp", "3b.bmp", "4b.bmp", "5b.bmp", "6b.bmp",
+                       "1a.bmp", "2a.bmp", "3a.bmp", "4a.bmp", "5a.bmp", "6a.bmp" };
 
     unsigned char* bitmap[N];
     int width[N];
@@ -149,7 +149,7 @@ int main(void)
         zs_skeleton = zhang_suen(height[k], width[k], median);
         m_free(median);
 
-        printf("8-Conn skeletonizing...\n");
+        printf("8-conn skeletonizing...\n");
         skeleton = zs_8conn(height[k], width[k], zs_skeleton);
         m_free(zs_skeleton);
 
@@ -172,7 +172,9 @@ int main(void)
     while(1)
     {
         printf("\nEnter a fingerprint image number to load: ");
-        scanf("%d", &fid);
+        fid = -1;
+        while (!(0 <= fid && fid < N))
+            scanf("%d", &fid);
 
         printf("Processing bitmap %d...\n", fid);
         printf("Converting bitmap to greyscale...\n");
@@ -228,7 +230,9 @@ int main(void)
         }
 
         printf("\nFound match: %d. Enter actual match: ", best_match);
-        scanf("%d", &fid);
+        fid = -1;
+        while (!(0 <= fid && fid < N/2))
+            scanf("%d", &fid);
 
         merge_heatmaps(&heat[fid], &new_heat);
 
