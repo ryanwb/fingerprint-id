@@ -149,9 +149,13 @@ int main(void)
         zs_skeleton = zhang_suen(height[k], width[k], median);
         m_free(median);
 
+        // Note: removed use of ZS 8-conn skeletonization due to the
+        /*
         printf("8-conn skeletonizing...\n");
         skeleton = zs_8conn(height[k], width[k], zs_skeleton);
         m_free(zs_skeleton);
+        */
+        skeleton = zs_skeleton;
 
         // Invert back
         invert_binary(skeleton, width[k], height[k]);
@@ -199,9 +203,12 @@ int main(void)
         zs_skeleton = zhang_suen(height[fid], width[fid], median);
         m_free(median);
 
+        /*
         printf("8-conn skeletonizing...\n");
         skeleton = zs_8conn(height[fid], width[fid], zs_skeleton);
         m_free(zs_skeleton);
+        */
+        skeleton = zs_skeleton;
 
         // Invert back
         invert_binary(skeleton, width[fid], height[fid]);
