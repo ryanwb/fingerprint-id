@@ -163,6 +163,7 @@ int main(void)
 
         // Invert back
         invert_binary(skeleton, width[k], height[k]);
+        m_free(skeleton);
 
         printf("Creating heatmap...\n");
 
@@ -171,6 +172,7 @@ int main(void)
 
         // Make a heat map from the CN map
         heat[k] = create_heatmap(cn_map, height[k], width[k]);
+        m_free(cn_map);
 
         printf("Complete!\n");
     }
@@ -221,9 +223,11 @@ int main(void)
 
         // Make CN map
         cn_map = minutiae_cn_map(skeleton, width[fid], height[fid]);
+        m_free(skeleton);
 
         // Make a heat map from the CN map
         new_heat = create_heatmap(cn_map, height[fid], width[fid]);
+        m_free(cn_map);
 
         printf("Complete!\n");
 

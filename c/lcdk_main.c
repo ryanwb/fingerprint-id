@@ -19,29 +19,21 @@
 #include <math.h>
 
 // Number of files
-#define N 12
+#define N_FPRINTS 10
+#define N_EACH 3
 
-unsigned char* bitmap[N];
-int width[N];
-int height[N];
+unsigned char* bitmap[N_FPRINTS * N_EACH];
+int width[N_FPRINTS * N_EACH];
+int height[N_FPRINTS * N_EACH];
 unsigned char* binary;
 unsigned char* median;
 unsigned char* zs_skeleton;
 unsigned char* skeleton;
 int* cn_map;
-heat_t heat[N/2];
+heat_t heat[N_FPRINTS];
 heat_t new_heat;
 
-interrupt void interrupt4(void)
-{
-	output_left_sample(0);
-}
-
-int main(void)
-{
-	mem_init();
-
-	char* files[N] = {
+char* files[N_FPRINTS * N_EACH] = {
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\1a.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\2a.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\3a.bmp",
@@ -54,13 +46,22 @@ int main(void)
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\4b.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\5b.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\6b.bmp"
-	};
+};
+
+interrupt void interrupt4(void)
+{
+	output_left_sample(0);
+}
+
+int main(void)
+{
+	mem_init();
 
 	int k;
 
 	int fid;
 
-	for (k = 0; k < N; k++)
+	for (k = 0; k < N_FPRINTS * N_EACH; k++)
 	{
 		printf("Reading bitmap...\n");
 		bitmap[k] = imread(files[k]);
@@ -73,7 +74,7 @@ int main(void)
 	printf("Enter any number to initialize heatmap database: ");
 	scanf("%d", &fid);
 
-	for (k = 0; k < N/2; k++)
+	for (k = 0; k < N_FPRINTS; k++)
 	{
 		printf("\nProcessing bitmap %d...\n", k);
 		printf("Converting bitmap to greyscale...\n");
@@ -98,12 +99,17 @@ int main(void)
 		zs_skeleton = zhang_suen(height[k], width[k], median);
 		m_free(median);
 
-		printf("8-Conn skeletonizing...\n");
+		// Removed: 8-conn skeletonization (takes too long)
+		/*
+		printf("8-conn skeletonizing...\n");
 		skeleton = zs_8conn(height[k], width[k], zs_skeleton);
 		m_free(zs_skeleton);
+		*/
+		skeleton = zs_skeleton;
 
 		// Invert back
 		invert_binary(skeleton, width[k], height[k]);
+		m_free(skeleton);
 
 		printf("Creating heatmap...\n");
 
@@ -112,16 +118,19 @@ int main(void)
 
 		// Make a heat map from the CN map
 		heat[k] = create_heatmap(cn_map, height[k], width[k]);
+		m_free(cn_map);
 
 		printf("Complete!\n");
 	}
 
-	printf("\nAll %d heatmaps created!\n", N/2);
+	printf("\nAll %d heatmaps created!\n", N_FPRINTS);
 
 	while(1)
 	{
 		printf("\nEnter a fingerprint image number to load: ");
-		scanf("%d", &fid);
+		fid = -1;
+		while (!(0 <= fid && fid < N_FPRINTS * N_EACH))
+			scanf("%d", &fid);
 
 		printf("Processing bitmap %d...\n", fid);
 		printf("Converting bitmap to greyscale...\n");
@@ -146,9 +155,13 @@ int main(void)
 		zs_skeleton = zhang_suen(height[fid], width[fid], median);
 		m_free(median);
 
+		// Removed: 8-conn skeletonization (takes too long)
+		/*
 		printf("8-conn skeletonizing...\n");
 		skeleton = zs_8conn(height[fid], width[fid], zs_skeleton);
 		m_free(zs_skeleton);
+		*/
+		skeleton = zs_skeleton;
 
 		// Invert back
 		invert_binary(skeleton, width[fid], height[fid]);
@@ -157,9 +170,11 @@ int main(void)
 
 		// Make CN map
 		cn_map = minutiae_cn_map(skeleton, width[fid], height[fid]);
+		m_free(skeleton);
 
 		// Make a heat map from the CN map
 		new_heat = create_heatmap(cn_map, height[fid], width[fid]);
+		m_free(cn_map);
 
 		printf("Complete!\n");
 
@@ -167,7 +182,7 @@ int main(void)
 		float best_score = 999.0;
 
 		int i;
-		for (i = 0; i < N/2; i++) {
+		for (i = 0; i < N_FPRINTS; i++) {
 			float this_score = compute_match_score(new_heat, heat[i]);
 			printf("%d-%d score: %.4f\n", fid, i, this_score);
 			if (this_score < best_score) {
@@ -177,7 +192,9 @@ int main(void)
 		}
 
 		printf("\nFound match: %d. Enter actual match: ", best_match);
-		scanf("%d", &fid);
+		fid = -1;
+		while (!(0 <= fid && fid < N_FPRINTS))
+			scanf("%d", &fid);
 
 		merge_heatmaps(&heat[fid], &new_heat);
 
