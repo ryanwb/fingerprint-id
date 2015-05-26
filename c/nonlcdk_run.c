@@ -80,30 +80,34 @@ BMP* bmp_from_heatmap(heat_t heat, USHORT depth)
 
 int main(void)
 {
-    const int N = 12;
+    const int N_FPRINTS = 10;
+    const int N_EACH = 3;
 	mem_init();
 
 	printf("Reading bitmaps...\n");
 
-    char* files[N] = { "1b.bmp", "2b.bmp", "3b.bmp", "4b.bmp", "5b.bmp", "6b.bmp",
-                       "1a.bmp", "2a.bmp", "3a.bmp", "4a.bmp", "5a.bmp", "6a.bmp" };
+    char* files[N_FPRINTS * N_EACH] = {
+        "1b.bmp", "2b.bmp", "3b.bmp", "4b.bmp", "5b.bmp", "6b.bmp", "7b.bmp", "8b.bmp", "9b.bmp", "10b.bmp",
+        "1a.bmp", "2a.bmp", "3a.bmp", "4a.bmp", "5a.bmp", "6a.bmp", "7a.bmp", "8a.bmp", "9a.bmp", "10a.bmp",
+        "1c.bmp", "2c.bmp", "3c.bmp", "4c.bmp", "5c.bmp", "6c.bmp", "7c.bmp", "8c.bmp", "9c.bmp", "10c.bmp"
+    };
 
-    unsigned char* bitmap[N];
-    int width[N];
-    int height[N];
+    unsigned char* bitmap[N_FPRINTS * N_EACH];
+    int width[N_FPRINTS * N_EACH];
+    int height[N_FPRINTS * N_EACH];
     unsigned char* binary;
     unsigned char* median;
     unsigned char* zs_skeleton;
     unsigned char* skeleton;
     int* cn_map;
-    heat_t heat[N/2];
+    heat_t heat[N_FPRINTS];
     heat_t new_heat;
 
     int k;
     int fid;
 
     /* Read an image file */
-    for (k = 0; k < N; k++)
+    for (k = 0; k < N_FPRINTS * N_EACH; k++)
     {
         BMP *bmp;
         USHORT  depth;
@@ -124,7 +128,7 @@ int main(void)
     printf("Enter any number to initialize heatmap database: ");
     scanf("%d", &fid);
 
-    for (k = 0; k < N/2; k++)
+    for (k = 0; k < N_FPRINTS; k++)
     {
         printf("\nProcessing bitmap %d...\n", k);
         printf("Converting bitmap to greyscale...\n");
@@ -171,13 +175,13 @@ int main(void)
         printf("Complete!\n");
     }
 
-    printf("\nAll %d heatmaps created!\n", N/2);
+    printf("\nAll %d heatmaps created!\n", N_FPRINTS);
 
     while(1)
     {
         printf("\nEnter a fingerprint image number to load: ");
         fid = -1;
-        while (!(0 <= fid && fid < N))
+        while (!(0 <= fid && fid < N_FPRINTS * N_EACH))
             scanf("%d", &fid);
 
         printf("Processing bitmap %d...\n", fid);
@@ -227,7 +231,7 @@ int main(void)
         float best_score = 999.0;
 
         int i;
-        for (i = 0; i < N/2; i++) {
+        for (i = 0; i < N_FPRINTS; i++) {
             float this_score = compute_match_score(new_heat, heat[i]);
             printf("%d-%d score: %.4f\n", fid, i, this_score);
             if (this_score < best_score) {
@@ -238,7 +242,7 @@ int main(void)
 
         printf("\nFound match: %d. Enter actual match: ", best_match);
         fid = -1;
-        while (!(0 <= fid && fid < N/2))
+        while (!(0 <= fid && fid < N_FPRINTS))
             scanf("%d", &fid);
 
         merge_heatmaps(&heat[fid], &new_heat);
@@ -248,7 +252,7 @@ int main(void)
         free_heatmap_body(&new_heat);
     }
 
-    for (k = 0; k < N; k++)
+    for (k = 0; k < N_FPRINTS; k++)
         free_heatmap_body(&heat[k]);
 
     printf("Exiting...\n");
