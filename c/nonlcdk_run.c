@@ -92,6 +92,14 @@ int main(void)
         "1c.bmp", "2c.bmp", "3c.bmp", "4c.bmp", "5c.bmp", "6c.bmp", "7c.bmp", "8c.bmp", "9c.bmp", "10c.bmp"
     };
 
+    // Modification: use hardcoded thresholds
+    unsigned char thresholds[N_FPRINTS * N_EACH] = {
+        163, 175, 175, 173, 210, 225, 145, 130, 160, 115,
+        175, 170, 155, 155, 210, 220, 120, 130, 170, 105,
+        135, 180, 153, 170, 210, 225, 130, 130, 165, 120
+    };
+    int use_hardcoded_threshold = 0;
+
     unsigned char* bitmap[N_FPRINTS * N_EACH];
     int width[N_FPRINTS * N_EACH];
     int height[N_FPRINTS * N_EACH];
@@ -134,9 +142,16 @@ int main(void)
         printf("Converting bitmap to greyscale...\n");
         binary = to_greyscale(bitmap[k], width[k], height[k]); // load the image in black & white
 
-        // Calculate the threshold to use for black and white conversion
-        printf("Calculating black and white threshold...\n");
-        unsigned char bw_threshold = find_threshold(binary, width[k], height[k]);
+        unsigned char bw_threshold;
+        if (use_hardcoded_threshold) {
+            // Modification: use hardcoded threshold
+            bw_threshold = thresholds[k];
+        }
+        else {
+            // Calculate the threshold to use for black and white conversion
+            printf("Calculating black and white threshold...\n");
+            bw_threshold = find_threshold(binary, width[k], height[k]);
+        }
 
         printf("Binarizing... threshold: %d\n", bw_threshold);
         binarize(binary, width[k], height[k], bw_threshold); // binarize the image (in-place)
@@ -190,9 +205,16 @@ int main(void)
         printf("Converting bitmap to greyscale...\n");
         binary = to_greyscale(bitmap[fid], width[fid], height[fid]); // load the image in black & white
 
-        // Calculate the threshold to use for black and white conversion
-        printf("Calculating black and white threshold...\n");
-        unsigned char bw_threshold = find_threshold(binary, width[fid], height[fid]);
+        unsigned char bw_threshold;
+        if (use_hardcoded_threshold) {
+            // Modification: use hardcoded threshold
+            bw_threshold = thresholds[fid];
+        }
+        else {
+            // Calculate the threshold to use for black and white conversion
+            printf("Calculating black and white threshold...\n");
+            bw_threshold = find_threshold(binary, width[fid], height[fid]);
+        }
 
         printf("Binarizing... threshold: %d\n", bw_threshold);
         binarize(binary, width[fid], height[fid], bw_threshold); // binarize the image (in-place)
