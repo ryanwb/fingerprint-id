@@ -8,7 +8,7 @@
 #define MMEM
 #include "stdlib.h" 
 #include "stdio.h"
-#define MAX_SEG 50
+#define MAX_SEG 5000
 #define STATIC_MEM_SIZE 2*1024*1024
 #define QUEUE_SIZE 12*1024*1024
 #define INF 0xffffffff
