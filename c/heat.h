@@ -55,12 +55,17 @@ float compute_match_score(heat_t heat_a, heat_t heat_b)
 		}
 	}
 
+	// Some fixes to avoid divide by zero:
+	if (a_bif_sum == 0) a_bif_sum = 1; if (b_bif_sum == 0) b_bif_sum = 1;
+	if (a_re_sum == 0) a_re_sum = 1; if (b_re_sum == 0) b_re_sum = 1;
+	if (a_cros_sum == 0) a_cros_sum = 1; if (b_cros_sum == 0) b_cros_sum = 1;
+
 	// Now compute the scores using the normalization
 	for (i = 0; i < h; i++) {
 		for (j = 0; j < w; j++) {
 			score += fabsf(heat_a.map.bifurcation[i*w + j]/a_bif_sum - heat_b.map.bifurcation[i*w + j]/b_bif_sum);
 			score += fabsf(heat_a.map.ridgeending[i*w + j]/a_re_sum - heat_b.map.ridgeending[i*w + j]/b_re_sum);
-			// score += fabsf(heat_a.map.crossing[i*w + j]/a_cros_sum - heat_b.map.crossing[i*w + j]/b_cros_sum);
+			score += fabsf(heat_a.map.crossing[i*w + j]/a_cros_sum - heat_b.map.crossing[i*w + j]/b_cros_sum);
 		}
 	}
 	// TODO: BETTER SCORING

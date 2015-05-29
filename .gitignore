@@ -5,3 +5,5 @@
 # .o files
 *.o
 *.out
+# Bitmap files
+*.bmp
