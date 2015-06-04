@@ -10,7 +10,7 @@
 #define MEDIANELEMENT 4
 #define WINDOWSIZE (windowXdim*windowYdim)
 
-//BUBBLE SORT (REPLACEMENT FOR QSORT)
+// Bubble sort (our replacement for quicksort on the LCDK)
 void bubble_sort(unsigned char a[], int len)
 {
     // "Rising" bubble sort
@@ -34,45 +34,34 @@ void bubble_sort(unsigned char a[], int len)
 
 unsigned char * med_filter(unsigned char *image, int xDim, int yDim)
 {
-    //add padding to dimensions
+    // Add padding to dimensions
     int paddedXDim=xDim+padding;
     int paddedYDim=yDim+padding;
     
-    //padded matrix
+    // Padded matrix
     unsigned char *paddedMatrix=(unsigned char*)m_malloc(paddedXDim*paddedYDim*sizeof(unsigned char));
     int i,j;
     for(i=0;i<paddedYDim;i++)
     {
         for (j=0; j<paddedXDim; j++)
         {
-            //initialize padded matrix to 0
+            // Initialize padded matrix to 0
             *(paddedMatrix +i*paddedXDim+j)=0;
         }
     }
     
-    //copy original image onto the padded matrix
+    // Copy original image onto the padded matrix
     int k,l;
     for(k=0;k<yDim;k++)
     {
         for (l=0; l<xDim; l++)
         {
-            //initialize padded matrix to 0
+            // Initialize padded matrix to 0
             *(paddedMatrix +(k+1)*xDim+(l+1))=*(image +k*xDim+l);
         }
     }
-    //TODO CHECK IF OUTPUT LOOKS SOMETHING LIKE
-    /*
-     000000000000
-     011111111110
-     011111111110
-     011111111110
-     011111111110
-     011111111110
-     011111111110
-     000000000000
-     */
     
-    //create a 3x3 window
+    // Create a 3x3 window
     unsigned char *window=(unsigned char*)m_malloc(windowXdim*windowYdim*sizeof(unsigned char));
     unsigned char *output=(unsigned char*)m_malloc(xDim*yDim*sizeof(unsigned char));
     
@@ -86,19 +75,18 @@ unsigned char * med_filter(unsigned char *image, int xDim, int yDim)
             {
                 for(d=0; d<windowXdim; d++)
                 {
-                    // copy the paddedmatrix into the window
+                    // Copy the paddedmatrix into the window
                     *(window+c*windowXdim+d)=*(paddedMatrix+(a+c-1)*xDim+(b+d-1));
                 }
             }
-            //qsort(window,WINDOWSIZE,sizeof(int),cmpfunc);
-            
-            //for each window, find the median element of the window & copy to output
+            // Previously: qsort(window,WINDOWSIZE,sizeof(int),cmpfunc);
+            // For each window, find the median element of the window & copy to output
             bubble_sort(window, WINDOWSIZE);
             *(output+a*xDim+b)=window[(int)MEDIANELEMENT];
         }
     }
 
-    //FREE MEMORY FOR TEMP MATRICIES
+    // Free memory for temp matricies
     m_free(window);
     m_free(paddedMatrix);
     return output;

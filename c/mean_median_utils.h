@@ -10,7 +10,7 @@ unsigned char find_mean(unsigned char* data, int n)
   return (unsigned char)(mean / (float)n);
 }
 
-//MERGE TWO ARRAYS
+// Merge two arrays
 void merge(unsigned char *A, int a, unsigned char *B, int b, unsigned char *C) 
 {
   int i,j,k;
@@ -19,25 +19,25 @@ void merge(unsigned char *A, int a, unsigned char *B, int b, unsigned char *C)
   k = 0;
   while (i < a && j < b) {
     if (A[i] <= B[j]) {
-	  /* copy A[i] to C[k] and move the pointer i and k forward */
+	  /* Copy A[i] to C[k] and move the pointer i and k forward */
 	  C[k] = A[i];
 	  i++;
 	  k++;
     }
     else {
-      /* copy B[j] to C[k] and move the pointer j and k forward */
+      /* Copy B[j] to C[k] and move the pointer j and k forward */
       C[k] = B[j];
       j++;
       k++;
     }
   }
-  /* move the remaining elements in A into C */
+  /* Move the remaining elements in A into C */
   while (i < a) {
     C[k]= A[i];
     i++;
     k++;
   }
-  /* move the remaining elements in B into C */
+  /* Move the remaining elements in B into C */
   while (j < b)  {
     C[k]= B[j];
     j++;
@@ -45,7 +45,7 @@ void merge(unsigned char *A, int a, unsigned char *B, int b, unsigned char *C)
   }
 }  
 
-//MERGESORT
+// Mergesort
 void merge_sort(unsigned char *A, int n){
 	int i;
 	unsigned char *A1, *A2;
@@ -74,7 +74,7 @@ void merge_sort(unsigned char *A, int n){
 }
 
 unsigned char find_median(unsigned char * data, int n) {
-  // first, copy the input so we don't modify it
+  // First, copy the input so we don't modify it
   unsigned char *array = (unsigned char*)m_malloc(sizeof(unsigned char)*n);
   int i;
   unsigned char median;

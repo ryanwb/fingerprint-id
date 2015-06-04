@@ -7,35 +7,35 @@
 // zs_A Gets the Zhang-Suen A function value for a pixel img(i,j)
 int zs_A(unsigned char* img, int i, int j, int rMax) {
     int a=0;
-    //% P2 -> P3
+    // P2 -> P3
     if(*(img+(i-1)*rMax+j)==0 && *(img+(i-1)*rMax+(j+1))==1){
         a++;
     }
-    //% P3 -> P4
+    // P3 -> P4
     if(*(img+(i-1)*rMax+(j+1))==0 && *(img+i*rMax+(j+1))==1){
         a++;
     }
-    //% P4 -> P5
+    // P4 -> P5
     if(*(img+(i)*rMax+(j+1))==0 && *(img+(i+1)*rMax+(j+1))==1){
         a++;
     }
-    //% P5 -> P6
+    // P5 -> P6
     if(*(img+(i+1)*rMax+(j+1))==0 && *(img+(i+1)*rMax+(j))==1){
         a++;
     }
-    //% P6 -> P7
+    // P6 -> P7
     if(*(img+(i+1)*rMax+(j))==0 && *(img+(i+1)*rMax+(j-1))==1){
         a++;
     }
-    //% P7 -> P8
+    // P7 -> P8
     if(*(img+(i+1)*rMax+(j-1))==0 && *(img+(i)*rMax+(j-1))==1){
         a++;
     }
-    //% P8 -> P9
+    // P8 -> P9
     if(*(img+(i)*rMax+(j-1))==0 && *(img+(i-1)*rMax+(j-1))==1){
         a++;
     }
-    //% P9 -> P2
+    // P9 -> P2
     if(*(img+(i-1)*rMax+(j-1))==0 && *(img+(i-1)*rMax+(j))==1){
         a++;
     }
@@ -90,7 +90,7 @@ int SUBCOND_TWO(int i , int j ,int rMax, unsigned char* img) {
 unsigned char* zhang_suen(int m, int n, unsigned char* img) {
     unsigned char* thin = (unsigned char*)m_malloc(m*n*sizeof(unsigned char));
     
-    //thin = img;
+    // thin = img;
     int a,b;
     for(a=0; a<m; a++){
         for(b=0; b<n; b++){
@@ -101,19 +101,16 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
     int * pts_to_remove= (int*)m_malloc(m*n*sizeof(int)*2);
     
     int did_change = 1;    
-    //Note: pts_to_remove will be a linked list in C? or can just use an array
-    //RUSS: I started to implement this in an array, but can be changed if linked list ends up being better
     while(did_change== 1){
         int p = 0;
         did_change = 0;
         int i,j;
-        //RUSS:ZERO OUT THE MATRIX
+        // Zero out the matrix
         for(i = 0; i < m*n*2; i++) {
             *(pts_to_remove + i) = 0;
         }
         
-        //Do the first subiteration
-        
+        // Do the first subiteration
         for(i=1;i<m-1;i++){
             for (j=1; j<n-1; j++){
                 if (*(thin+(i*n)+j)==1 && SUBCOND_ONE(i, j, n, thin)== 1) {
@@ -124,7 +121,8 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
                 }
             }
         }
-        //Remove points found in the first subiteration
+
+        // Remove points found in the first subiteration
         for(i=0; i<p;i++){
             int k = pts_to_remove[i*2];
             int l = pts_to_remove[i*2+1];
@@ -133,7 +131,7 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
         
         p=0;
         
-        //Do the second subiteration
+        // Do the second subiteration
         for(i=1;i<m-1;i++){
             for(j=1;j<n-1;j++){
                 if (*(thin+(i*n)+j)==1 && SUBCOND_TWO(i, j, n, thin)== 1) {
@@ -145,7 +143,7 @@ unsigned char* zhang_suen(int m, int n, unsigned char* img) {
             }
         }
         
-        //:Remove points found in second subiteration
+        // Remove points found in second subiteration
         for(i=0; i<p;i++){
             int k = pts_to_remove[i*2];
             int l = pts_to_remove[i*2+1];

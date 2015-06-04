@@ -65,10 +65,9 @@ float compute_match_score(heat_t heat_a, heat_t heat_b)
 		for (j = 0; j < w; j++) {
 			score += fabsf(heat_a.map.bifurcation[i*w + j]/a_bif_sum - heat_b.map.bifurcation[i*w + j]/b_bif_sum);
 			score += fabsf(heat_a.map.ridgeending[i*w + j]/a_re_sum - heat_b.map.ridgeending[i*w + j]/b_re_sum);
-			score += fabsf(heat_a.map.crossing[i*w + j]/a_cros_sum - heat_b.map.crossing[i*w + j]/b_cros_sum);
+			// score += fabsf(heat_a.map.crossing[i*w + j]/a_cros_sum - heat_b.map.crossing[i*w + j]/b_cros_sum);
 		}
 	}
-	// TODO: BETTER SCORING
 	return score;
 }
 
@@ -110,7 +109,7 @@ void free_heatmap_body(heat_t* heat)
 void blur_point(float* matrix, int height, int width, int i, int j)
 {
 	// We'll only modify points in a box_size*2+1 by box_size*2+1 square around the point to blur
-	int box_size = 4;
+	int box_size = 20;
 	int y_start = i - box_size >= 0 ? i - box_size : 0;
 	int y_end = i + box_size <= height ? i + box_size : height;
 	int x_start = j - box_size >= 0 ? j - box_size : 0;

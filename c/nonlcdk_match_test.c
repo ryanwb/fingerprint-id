@@ -148,8 +148,11 @@ int main(void)
         unsigned char* zs_skeleton = zhang_suen(height, width, median);
         m_free(median);
 
+        /*
         unsigned char* skeleton = zs_8conn(height, width, zs_skeleton);
         m_free(zs_skeleton);
+        */
+        unsigned char* skeleton = sz_skeleton;
 
         // Invert back
         invert_binary(skeleton, width, height);

@@ -14,7 +14,9 @@
 #include <stdio.h>
 #include <math.h>
 
-void adaptiveThreshold(unsigned char* input, unsigned char* bin, int width, int height)
+// Bradley Adaptive Thresholding
+// Implemented by Robert Theis (rmtheis, https://github.com/rmtheis)
+void adaptive_threshold(unsigned char* input, unsigned char* bin, int width, int height)
 {
     int IMAGE_WIDTH = width;
     int IMAGE_HEIGHT = height;
@@ -155,8 +157,8 @@ int main(void)
 	printf("Reading bitmaps...\n");
 
     char* files[N_FPRINTS * N_EACH] = {
-        "1b.bmp", "2b.bmp", "3b.bmp", "4b.bmp", "5b.bmp", "6b.bmp", "7b.bmp", "8b.bmp", "9b.bmp", "10b.bmp",
         "1a.bmp", "2a.bmp", "3a.bmp", "4a.bmp", "5a.bmp", "6a.bmp", "7a.bmp", "8a.bmp", "9a.bmp", "10a.bmp",
+        "1b.bmp", "2b.bmp", "3b.bmp", "4b.bmp", "5b.bmp", "6b.bmp", "7b.bmp", "8b.bmp", "9b.bmp", "10b.bmp",
         "1c.bmp", "2c.bmp", "3c.bmp", "4c.bmp", "5c.bmp", "6c.bmp", "7c.bmp", "8c.bmp", "9c.bmp", "10c.bmp"
     };
 
@@ -205,8 +207,9 @@ int main(void)
 
         printf("Binarizing adaptively...\n");
         binary = m_malloc(width[k] * height[k] * sizeof(unsigned char));
-        adaptiveThreshold(grey, binary, width[k], height[k]);
+        adaptive_threshold(grey, binary, width[k], height[k]);
         m_free(grey);
+        upsidedown(binary, width[k], height[k]); // flip it upside down (in-place)
 
         printf("Running median filter...\n");
         median = med_filter(binary, width[k], height[k]);
@@ -268,8 +271,9 @@ int main(void)
 
         printf("Binarizing adaptively...\n");
         binary = m_malloc(width[fid] * height[fid] * sizeof(unsigned char));
-        adaptiveThreshold(grey, binary, width[fid], height[fid]);
+        adaptive_threshold(grey, binary, width[fid], height[fid]);
         m_free(grey);
+        upsidedown(binary, width[fid], height[fid]); // flip it upside down (in-place)
 
         printf("Running median filter...\n");
         median = med_filter(binary, width[fid], height[fid]);

@@ -202,16 +202,4 @@ int main(void)
 
 		free_heatmap_body(&new_heat);
 	}
-
-/*
-	for (k = 0; k < N; k++)
-		free_heatmap_body(&heat[k]);
-
-	printf("Done...\n");
-
-	// L138_initialise_intr(FS_8000_HZ,ADC_GAIN_0DB,DAC_ATTEN_0DB,LCDK_LINE_INPUT);
-
-	while(1)
-		continue;
-*/
 }

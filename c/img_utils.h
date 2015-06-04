@@ -5,14 +5,11 @@
 #include "m_mem.h"
 #include "mean_median_utils.h"
 
-// TODO: Change these so that they don't alloc new memory, but work in-place (when it makes sense to do so)
-
 /* find_threshold
  * Finds the "threshold" greyscale value to be used for later black and white conversion
  */
 unsigned char find_threshold(unsigned char* image, int width, int height)
 {
-	// TODO: Find a better (adaptive?) threshold, if we have time
 	return find_mean(image, width * height) - 15;
 }
 

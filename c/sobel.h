@@ -20,9 +20,9 @@ unsigned char* sobel_filter(unsigned char* image, int width, int height)
 	           	   	     {0,   0,  0},
 	           	   	     {1,   2,  1}}; */
 
-	int sobel_y[3][3] = {{1, 2, 1},
-		           	   	 {0,   0,  0},
-		           	   	 {-1,   -2,  -1}};
+	int sobel_y[3][3] = {{1,   2,   1},
+		           	   	 {0,   0,   0},
+		           	   	 {-1, -2,  -1}};
 
 	int x, y;
 	for (y = 0; y < height; y++) {
@@ -38,10 +38,8 @@ unsigned char* sobel_filter(unsigned char* image, int width, int height)
 		    double val = sqrt((double)((pixel_x * pixel_x) + (pixel_y * pixel_y)));
 
 		    int threshold=100;
-		    if(val>threshold)
-		    {
+		    if (val>threshold)
 		    	val=1;
-		    }
 		    else
 		    	val=0;
 

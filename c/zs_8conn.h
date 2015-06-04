@@ -3,11 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "zhang_suen.h" // for zs_B function
+#include "zhang_suen.h"
 
 int flood_count_recursive(int i, int j, unsigned char * nimg, int x, int y, int m, int n){
-    //y and x are current positions
-    //i and j are center-of-frame positions
+    // y and x are current positions
+    // i and j are center-of-frame positions
     int z;
     if(!(i-1<=y && y<= i+1)){
         z=0;
@@ -85,8 +85,9 @@ unsigned char * zs_8conn(int m, int n, unsigned char * in){
         for (j=1; j<n-1; j++){
             if (*(out+n*i+j)==1){
                 if(zs_B(out, i, j, n)>2){
-                    /* % if removing the point breaks 8-connectivity,
-                     % don't actually remove the point*/
+                    /* If removing the point breaks 8-connectivity,
+                     * don't actually remove the point
+                     */
                     *(out+n*i+j)=0;
                     if(is_8conn(i, j, out, m, n) == 0){
                         *(out+n*i+j)=1;

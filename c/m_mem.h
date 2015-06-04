@@ -14,8 +14,7 @@
 #define INF 0xffffffff
 #define BLOCK_SIZE 24
 
-// If not using the LCDK, just let m_ functions be
-// calls to their stdlib counterparts
+// If not using the LCDK, just let m_ functions be calls to their stdlib counterparts
 #ifndef LCDK_BUILD
 
 #include <stdlib.h>
@@ -37,7 +36,6 @@ void m_free(void* p)
 
 #else
 // LCDK build memory management functions
-
 typedef struct seg
 {
 	void* left;
