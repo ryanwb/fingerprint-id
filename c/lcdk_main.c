@@ -34,18 +34,36 @@ heat_t heat[N_FPRINTS];
 heat_t new_heat;
 
 char* files[N_FPRINTS * N_EACH] = {
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\1b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\2b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\3b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\4b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\5b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\6b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\7b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\8b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\9b.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\10b.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\1a.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\2a.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\3a.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\4a.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\5a.bmp",
 			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\6a.bmp",
-			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\1b.bmp",
-			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\2b.bmp",
-			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\3b.bmp",
-			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\4b.bmp",
-			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\5b.bmp",
-			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\6b.bmp"
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\7a.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\8a.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\9a.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\10a.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\1c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\2c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\3c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\4c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\5c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\6c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\7c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\8c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\9c.bmp",
+			"C:\\Users\\EE113D\\MyProjects\\fingerprint-id\\10c.bmp"
 };
 
 interrupt void interrupt4(void)
