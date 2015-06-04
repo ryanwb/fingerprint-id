@@ -127,12 +127,12 @@ int main(void)
 
 		// Invert back
 		invert_binary(skeleton, width[k], height[k]);
-		m_free(skeleton);
 
 		printf("Creating heatmap...\n");
 
 		// Make CN map
 		cn_map = minutiae_cn_map(skeleton, width[k], height[k]);
+		m_free(skeleton);
 
 		// Make a heat map from the CN map
 		heat[k] = create_heatmap(cn_map, height[k], width[k]);
