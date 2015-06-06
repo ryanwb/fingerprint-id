@@ -14,80 +14,6 @@
 #include <stdio.h>
 #include <math.h>
 
-// Bradley Adaptive Thresholding
-// Implemented by Robert Theis (rmtheis, https://github.com/rmtheis)
-void adaptive_threshold(unsigned char* input, unsigned char* bin, int width, int height)
-{
-    int IMAGE_WIDTH = width;
-    int IMAGE_HEIGHT = height;
-    // int S = IMAGE_WIDTH/8;
-    // float T = 0.15f;
-    int S = IMAGE_WIDTH/20;
-    float T = 0.04f;
-
-    unsigned long* integralImg = 0;
-    int i, j;
-    long sum=0;
-    int count=0;
-    int index;
-    int x1, y1, x2, y2;
-    int s2 = S/2;
-
-    // create the integral image
-    integralImg = (unsigned long*)malloc(IMAGE_WIDTH*IMAGE_HEIGHT*sizeof(unsigned long*));
-
-    for (i=0; i<IMAGE_WIDTH; i++)
-    {
-        // reset this column sum
-        sum = 0;
-
-        for (j=0; j<IMAGE_HEIGHT; j++)
-        {
-            index = j*IMAGE_WIDTH+i;
-
-            sum += input[index];
-            if (i==0)
-                integralImg[index] = sum;
-            else
-                integralImg[index] = integralImg[index-1] + sum;
-        }
-    }
-
-    // perform thresholding
-    for (i=0; i<IMAGE_WIDTH; i++)
-    {
-        for (j=0; j<IMAGE_HEIGHT; j++)
-        {
-            index = j*IMAGE_WIDTH+i;
-
-            // set the SxS region
-            x1=i-s2; x2=i+s2;
-            y1=j-s2; y2=j+s2;
-
-            // check the border
-            if (x1 < 0) x1 = 0;
-            if (x2 >= IMAGE_WIDTH) x2 = IMAGE_WIDTH-1;
-            if (y1 < 0) y1 = 0;
-            if (y2 >= IMAGE_HEIGHT) y2 = IMAGE_HEIGHT-1;
-            
-            count = (x2-x1)*(y2-y1);
-
-            // I(x,y)=s(x2,y2)-s(x1,y2)-s(x2,y1)+s(x1,x1)
-            sum = integralImg[y2*IMAGE_WIDTH+x2] -
-                  integralImg[y1*IMAGE_WIDTH+x2] -
-                  integralImg[y2*IMAGE_WIDTH+x1] +
-                  integralImg[y1*IMAGE_WIDTH+x1];
-
-            if ((long)(input[index]*count) < (long)(sum*(1.0-T)))
-                bin[index] = 0;
-            else
-                bin[index] = 255;
-        }
-    }
-
-    free (integralImg);
-}
-
 unsigned char* grey;
 unsigned char* binary;
 unsigned char* bitmap;
@@ -211,7 +137,7 @@ int main(void)
 
         printf("Binarizing adaptively...\n");
         binary = m_malloc(width[k] * height[k] * sizeof(unsigned char));
-        adaptive_threshold(grey, binary, width[k], height[k]);
+        adaptive_binarize(grey, binary, width[k], height[k]);
         m_free(grey);
         upsidedown(binary, width[k], height[k]); // flip it upside down (in-place)
 
@@ -265,7 +191,7 @@ int main(void)
 
         printf("Binarizing adaptively...\n");
         binary = m_malloc(width[fid] * height[fid] * sizeof(unsigned char));
-        adaptive_threshold(grey, binary, width[fid], height[fid]);
+        adaptive_binarize(grey, binary, width[fid], height[fid]);
         m_free(grey);
         upsidedown(binary, width[fid], height[fid]); // flip it upside down (in-place)
 

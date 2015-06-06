@@ -5,6 +5,82 @@
 #include "m_mem.h"
 #include "mean_median_utils.h"
 
+/* adaptive_binarize
+ * Performs Bradley Adaptive Thresholding
+ * Credit: Robert Theis (rmtheis, https://github.com/rmtheis)
+ * bin is the output; it must be preallocated before the function call
+ */
+void adaptive_binarize(unsigned char* input, unsigned char* bin, int width, int height)
+{
+    // Parameters of the thresholding
+    int S = width/20;
+    float T = 0.04f;
+
+    unsigned long* integral_img = 0;
+    int i, j;
+    int index;
+    int x1, y1, x2, y2;
+    int s2 = S/2;
+
+    int sum;
+    int count = 0;
+
+    integral_img = (unsigned long*)m_malloc(width * height * sizeof(unsigned long));
+
+    // Make the integral image
+    for (i = 0; i < width; i++)
+    {
+        sum = 0;
+        for (j = 0; j < height; j++)
+        {
+            index = j * width + i;
+            sum += input[index];
+            if (i == 0)
+                integral_img[index] = sum;
+            else
+                integral_img[index] = integral_img[index - 1] + sum;
+        }
+    }
+
+    // Do the actual thresholding
+    for (i = 0; i < width; i++)
+    {
+        for (j = 0; j < height; j++)
+        {
+            index = j * width + i;
+
+            // Set the SxS region
+            x1 = i - s2;
+            x2 = i + s2;
+            y1 = j - s2;
+            y2 = j + s2;
+
+            // Adjust for out-of-bounds
+            if (x1 < 0)
+                x1 = 0;
+            if (x2 >= width)
+                x2 = width - 1;
+            if (y1 < 0)
+                y1 = 0;
+            if (y2 >= height)
+                y2 = height - 1;
+            
+            count = (x2 - x1) * (y2 - y1);
+
+            sum = integral_img[y2 * width + x2] -
+                  integral_img[y1 * width + x2] -
+                  integral_img[y2 * width + x1] +
+                  integral_img[y1 * width + x1];
+
+            if ((long)(input[index] * count) < (long)(sum * (1.0 - T)))
+                bin[index] = BBLACK;
+            else
+                bin[index] = BWHITE;
+        }
+    }
+    m_free(integral_img);
+}
+
 /* find_threshold
  * Finds the "threshold" greyscale value to be used for later black and white conversion
  */
